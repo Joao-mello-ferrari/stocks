@@ -1,0 +1,56 @@
+@import '../../styles/Variables.scss'; 
+
+.login{
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  
+  
+  .mainTextContainer{
+    width: 50vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4rem 0 10rem;
+
+    .mainText{
+      .title{
+        display: block;
+        font-size: 3.2rem;
+        line-height: 3.4rem;
+        margin-bottom: 1rem;
+        color: #FF776B;
+      }
+
+      .description{
+        font-size: 1.4rem;
+      }
+
+      .googleButton{
+        margin-top: 2.4rem;
+        display: flex;
+        justify-content: flex-start;
+        
+        button{
+          width: 60%;
+          svg{
+            margin-left: 0.6rem;
+          }
+        }
+      }
+    }
+  }
+
+  .mainImageContainer{
+    width: 50vw;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    img{
+      margin-left: -3rem;
+      width: 35vw;
+      height: auto;
+    }
+  }
+}

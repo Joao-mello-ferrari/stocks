@@ -1,0 +1,24 @@
+@import './Variables.scss'; 
+
+body, html{
+  border: 0;
+  margin: 0;
+
+  box-sizing: border-box;
+
+  a{
+    text-decoration: none;
+  }
+  
+  button{
+    border: 0;
+    outline: none;
+    cursor: pointer;
+  }
+}
+
+.container{
+  background: $bg;
+  color: $text;
+  font-family: Roboto, sans-serif;
+}

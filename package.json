@@ -8,10 +8,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/crypto-js": "^4.1.1",
+    "crypto-js": "^4.1.1",
     "gapi-script": "^1.2.0",
+    "nookies": "^2.5.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-google-login": "^5.2.2"
+    "react-google-login": "^5.2.2",
+    "sass": "^1.52.3"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
