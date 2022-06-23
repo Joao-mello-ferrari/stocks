@@ -28,14 +28,14 @@ export function AuthContenxtProvider({ children }: AuthContenxtProviderProps ){
     const user = cookies['@stocks:user'];
 
     if (!!user){
-      const bytes = CryptoJS.AES.decrypt(user, import.meta.env.VITE_APP_ENCRYPT_SECRET);
-      return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+      const bytes = crypto.AES.decrypt(user, import.meta.env.VITE_APP_ENCRYPT_SECRET);
+      return JSON.parse(bytes.toString(crypto.enc.Utf8));
     }
     return {} as User;
   })
 
   const login = useCallback((user: User)=>{
-    const encryptedUser = CryptoJS.AES.encrypt(
+    const encryptedUser = crypto.AES.encrypt(
       JSON.stringify(user), 
         import.meta.env.VITE_APP_ENCRYPT_SECRET
     ).toString();
@@ -51,9 +51,9 @@ export function AuthContenxtProvider({ children }: AuthContenxtProviderProps ){
     setUser({} as User);
   },[]);
 
-  const isLogged = useCallback(()=>{
-    return String(user) !== "{}"
-  },[]);
+  const isLogged = () =>{
+    return Object.keys(user).length !== 0
+  }
 
   return(
     <AuthContext.Provider value={{ user, login, logout, isLogged }}>
@@ -62,6 +62,6 @@ export function AuthContenxtProvider({ children }: AuthContenxtProviderProps ){
   )
 }
 
-export function useAut(){
+export function useAuth(){
   return useContext(AuthContext);
 }

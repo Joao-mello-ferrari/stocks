@@ -19,7 +19,7 @@
         display: block;
         font-size: 3.2rem;
         line-height: 3.4rem;
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
         color: #FF776B;
       }
 
@@ -28,14 +28,20 @@
       }
 
       .googleButton{
-        margin-top: 2.4rem;
+        margin-top: 3rem;
         display: flex;
         justify-content: flex-start;
         
         button{
-          width: 60%;
-          svg{
-            margin-left: 0.6rem;
+          width: 80%;
+          height: 4rem;
+          font-size: 1.4rem!important;
+          border-radius: 0.4rem!important;
+
+          svg{ 
+            padding-top: 0.5rem;
+            margin-left: 1.4rem; 
+            transform: scale(1.75);
           }
         }
       }

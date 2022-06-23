@@ -4,6 +4,10 @@ body, html{
   border: 0;
   margin: 0;
 
+  background: $bg;
+  color: $text;
+  font-family: Roboto, sans-serif;
+
   box-sizing: border-box;
 
   a{
@@ -15,10 +19,9 @@ body, html{
     outline: none;
     cursor: pointer;
   }
+
+  @media(min-width: 1600px){
+    font-size: 125%;
+  }
 }
 
-.container{
-  background: $bg;
-  color: $text;
-  font-family: Roboto, sans-serif;
-}

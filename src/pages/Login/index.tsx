@@ -1,31 +1,20 @@
-import { gapi } from 'gapi-script'
-import { useEffect } from 'react'
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline, GoogleLogout } from 'react-google-login'
 
+import { useAuth } from '../../contexts/authContext'
 
 import styles from './Login.module.scss'
 
 export function Login(){
-  useEffect(()=>{
-    function start(){
-      gapi.client.init({
-        clientId:import.meta.env.VITE_APP_GAPI_CLIENT_ID,
-        scope: ""
-      })
-
-    }
-    gapi.load('client:auth2', start)
-    // console.log(gapi.auth.getToken().access_token)
-  })
+  const { login } = useAuth();
 
   function onSuccess(r:GoogleLoginResponse | GoogleLoginResponseOffline){
-    // if(r instanceof GoogleLoginResponse)
-    // if(r.includes())
-    if('profileObj' in r) console.log(r.profileObj)
-    // console.log(r?.profileObj)
+    if('profileObj' in r) {
+      login(r.profileObj)
+    }
   }
+
   function onFailure(){
-    // CryptoJS.AES.encrypt("Message", "My Secret Passphrase");
+    return
   }
 
   return(
@@ -37,7 +26,7 @@ export function Login(){
           </strong>
           <span className={styles.description}>
             Acesse a plataforma utilizando sua conta Google e começe
-            a organizar seus investimentos
+            a organizar seus investimentos.
           </span>
           <div className={styles.googleButton}>
             <GoogleLogin
