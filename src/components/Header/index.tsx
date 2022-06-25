@@ -1,19 +1,26 @@
-import { FiTrendingUp, FiLogOut } from 'react-icons/fi'
+import {  useGoogleLogout } from "react-google-login";
 import { useAuth } from '../../contexts/authContext'
+
+import { FiTrendingUp, FiLogOut } from 'react-icons/fi'
 
 
 import './styles.scss'
 
 export function Header(){
   const { user, logout } = useAuth();
-// alert(user.imageUrl)
+
+  const { signOut } = useGoogleLogout({ 
+    clientId: import.meta.env.VITE_APP_GAPI_CLIENT_ID,
+    onLogoutSuccess() { logout() },
+   });
+
   return(
     <header className="header">
       <div className="logo">
         <FiTrendingUp />
         <div className="logo-text-container">
           <span className="logo-text">Stocks</span>
-          <span className="logo-slogan">HANDLE YOUR MONEY</span>
+          {/* <span className="logo-slogan">HANDLE YOUR MONEY</span> */}
         </div>
       </div>
       <div className="user-container">
@@ -25,8 +32,9 @@ export function Header(){
           className="user-avatar"
           src={user.imageUrl}
           alt="Profile picture" 
+          referrerPolicy="no-referrer"
         />
-        <FiLogOut onClick={()=>{ logout() }}/>
+        <FiLogOut onClick={()=>{ signOut() }}/>
       </div>
     </header>
   )

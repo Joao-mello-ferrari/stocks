@@ -1,20 +1,18 @@
-import { GoogleLogout } from "react-google-login";
 import { useAuth } from "../../contexts/authContext"
 
 import { Header } from '../../components/Header'
+import { Resume } from "../../components/Resume"
+import { Filters } from "../../components/Filters"
+
+import './styles.scss'
 
 export function Dashboard(){
-  const { logout } = useAuth();
-
-
   return(
-    <>
+    <div className="container">
       <Header/>
-      {/* <GoogleLogout
-        clientId={import.meta.env.VITE_APP_GAPI_CLIENT_ID}
-        buttonText="Logout"
-        onLogoutSuccess={()=>{logout()}}
-      />  */}
-    </>
+      <Resume/>
+      <Filters/>
+      
+    </div>
   )
 }
