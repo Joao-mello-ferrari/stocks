@@ -1,0 +1,74 @@
+@import '../../styles/Variables.scss';
+
+.header{
+  height: 12vh;
+  max-height: 230px;
+  width: 100vw;
+  max-width: 1920px;
+
+  display: flex;
+  justify-content: space-between;
+  // padding: 0 3rem;
+
+  background: $header;
+}
+
+.logo{
+  margin-left: 10%;
+  display: flex;
+  align-items: center;
+
+  svg{
+    color: $theme;
+    font-size: 2rem;
+    margin-right: 0.8rem;
+  }
+
+  .logo-text-container{
+    display: flex;
+    flex-direction: column;
+    margin-top: -0.8rem;
+
+    .logo-text{
+      font-size: 2.4rem;
+      font-family: 'Kdam Thmor Pro', sans-serif;
+    }
+
+    .logo-slogan{
+      font-size: 0.7rem;
+      display: block;
+      margin-top: -0.5rem;
+    }
+  }
+}
+
+.user-container{
+  margin-right: 3.2rem;
+  display: flex;
+  align-items: center;
+
+  .user-info{
+    display: flex;
+    flex-direction: column;
+    margin-right: 1rem;
+    text-align: right;
+    padding-right: 1rem;
+    border-right: 1px solid $text;
+  }
+
+  .user-avatar{
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    border: 2px solid $theme;
+    margin-right: 1rem;
+  }
+
+  svg{
+    font-size: 1.4rem;
+
+    &:hover{
+      cursor: pointer;
+    }
+  }
+}
