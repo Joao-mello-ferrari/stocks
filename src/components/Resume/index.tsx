@@ -1,34 +1,61 @@
-import { FiArrowDownCircle, FiArrowUpCircle, FiDollarSign } from 'react-icons/fi'
+import { FiArrowDownCircle, FiArrowUpCircle, FiChevronDown, FiDollarSign, FiX } from 'react-icons/fi'
 
 import './styles.scss'
 
-export function Resume(){
+interface ResumeProps{
+  isResumeCLosed: boolean;
+  onClose: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export function Resume({ isResumeCLosed, onClose }: ResumeProps){
+
   return(
-    <section className="resume-container">
-      <div className="resume-itens-container">
-        <div className="card buy">
+    <section className={
+      `resume-container
+      ${ isResumeCLosed ? 'resume-container-tighten' : '' }`
+    }>
+      <div 
+        className={
+          `resume-itens-container
+          ${ isResumeCLosed ? 'resume-itens-container-tighten' : ''}
+        `}>
+        <div className={
+          `card buy 
+          ${ isResumeCLosed ? 'card-translate-y' : ''}`
+        }>
           <div className="title">
-            <FiArrowUpCircle/>
+            <FiArrowDownCircle/>
             <span>Valor comprado</span>
           </div>
           <strong>R$ 1.000,00</strong>
         </div>
 
-        <div className="card sell">
+        <div className={
+          `card sell 
+          ${ isResumeCLosed ? 'card-translate-y' : ''}`
+        }>
           <div className="title">
-            <FiArrowDownCircle/>
+            <FiArrowUpCircle/>
             <span>Valor vendido</span>
           </div>
           <strong>R$ 1.000,00</strong>
         </div>
 
-        <div className="card total">
+        <div className={
+          `card 
+          ${ isResumeCLosed ? 'card-translate-y' : ''}`
+        }>
           <div className="title">
             <FiDollarSign/>
             <span>Total em conta</span>
           </div>
           <strong>R$ 1.000,00</strong>
         </div>
+
+        { isResumeCLosed
+          ? <FiChevronDown className="close-icon" onClick={()=>{ onClose(false); }}/>
+          : <FiX className="close-icon" onClick={()=>{ onClose(true); }}/>
+        }
       </div>
     </section>
   )

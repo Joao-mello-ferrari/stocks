@@ -1,0 +1,49 @@
+@import '../../styles/Variables.scss';
+
+.filters-container{
+  width: 80vw;
+  margin: 4.8rem auto 0 auto;
+
+  transition: margin 0.6s;
+
+  .input-container{
+    display: inline;
+    position: relative;
+
+    svg{
+      position: absolute;
+      top: 0;
+      right: 0.8rem;
+      font-size: 1.2rem;
+      background: $bg;
+      padding: 0 0.2rem 0 0.6rem;
+    }
+  }
+
+  .input, .select{
+    border: 1.5px solid $text;
+    border-radius: 0.5rem;
+    outline: none;
+    
+    color: $text;
+    background: $bg;
+    
+    height: 2.8rem;
+    width: 14rem;
+    padding: 0.1rem 0.8rem;
+
+    font-size: 1rem;
+    
+  }
+
+  .select{
+    height: 3.2rem;
+    margin-left: 2rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position-x: 95%;
+    background-position-y: 45%;
+  }
+}
