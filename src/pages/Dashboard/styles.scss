@@ -1,7 +1,10 @@
 .container{
   width: 100vw;
   max-width: 1920px;
-  height: 500px;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
   margin: 0 auto;
 }

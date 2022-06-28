@@ -6,6 +6,7 @@ import { Filters } from "../../components/Filters"
 
 import './styles.scss'
 import { useState } from "react"
+import { Table } from "../../components/Table"
 
 export function Dashboard(){
   const [isResumeClosed, setIsResumeClosed] = useState(false);
@@ -15,7 +16,7 @@ export function Dashboard(){
       <Header/>
       <Resume onClose={setIsResumeClosed} isResumeCLosed={isResumeClosed}/>
       <Filters customStyles={ isResumeClosed ? { marginTop: '1rem'} : {}}/>
-      
+      <Table/>
     </div>
   )
 }
