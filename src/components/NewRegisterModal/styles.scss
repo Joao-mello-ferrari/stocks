@@ -1,0 +1,95 @@
+@import '../../styles/Variables.scss';
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, .5);
+}
+
+.modal {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  top: 10vh;
+  left: 6vw;
+  right: 6vw;
+  bottom: 10vh;
+  border-radius: 0.4rem;
+  background-color: $bg-extra-light;
+}
+
+.modal-content-container{
+  flex: 1;
+  display: flex;
+  padding: 1rem 2rem;
+  height: calc(80vh - 2rem);
+  flex-direction: column;
+
+  h2{
+    text-align: center;
+    font-size: 2rem;
+  }
+}
+
+.modal-form{
+  flex: 1;
+
+  label{
+    width: 16rem;
+    height: 2.4rem;
+    display: flex;
+    border: 2px solid $header;
+    border-radius: 0.4rem;
+    transition: border-color 0.2s;
+    position: relative;
+
+    &:focus-within{
+      border-color: $theme;
+      div{ 
+        border-color: $theme; 
+        svg{
+          color: $theme
+        }
+      }
+    }
+
+    input:not(:placeholder-shown) + div svg{
+      color: $theme;
+    }
+
+    input:not(:placeholder-shown) + div + span{
+      opacity: 1;
+      top: -0.6rem;
+    }
+
+    div{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-left: 2px solid $header;
+      width: 3.6rem;
+      height: 2.6rem;
+      margin-top: -.1rem;
+      transition: border-color 0.2s;
+      font-size: 1.1rem;
+      color: $header;
+    }
+
+    span{
+      position: absolute;
+      top: 0.6rem;
+      left: 0.4rem;
+      font-size: 0.7rem;
+      background: $bg-extra-light;
+      color: $text-light;
+      padding: 0 0.2rem;
+
+      opacity: 0;
+      
+      transition: top 0.4s, opacity 0.4s;
+    }
+  }
+}

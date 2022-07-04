@@ -1,0 +1,10 @@
+@import '../../../styles/Variables.scss';
+
+input{
+  width: 100%;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: $text;
+  padding: 0 0.6rem;
+}

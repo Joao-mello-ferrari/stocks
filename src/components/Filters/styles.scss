@@ -1,18 +1,19 @@
 @import '../../styles/Variables.scss';
 
 .filters-container{
+  display: flex;
+  align-items: center;
   width: 80vw;
   margin: 4.8rem auto 0 auto;
 
   transition: margin 0.6s;
 
   .input-container{
-    display: inline;
     position: relative;
 
     svg{
       position: absolute;
-      top: 0;
+      top: 1rem;
       right: 0.8rem;
       font-size: 1.2rem;
       background: $bg;
@@ -45,5 +46,23 @@
     background-repeat: no-repeat;
     background-position-x: 95%;
     background-position-y: 45%;
+  }
+
+  .button{
+    background: $theme;
+    border: 0;
+    border-radius: 0.4rem;
+    outline: none;
+
+    height: 2.4rem;
+    width: 10rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-left: auto;
+  
+    transition: opacity 0.2s;
+    &:hover{
+      opacity: 0.7;
+    }
   }
 }

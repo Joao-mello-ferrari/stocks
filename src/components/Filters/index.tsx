@@ -3,10 +3,11 @@ import { FiFilter } from 'react-icons/fi'
 import './styles.scss'
 
 interface FiltersProps{
-  customStyles: {}
+  customStyles: {},
+  onNewRegisterButtonClick: (state: boolean) => void;
 }
 
-export function Filters({ customStyles }: FiltersProps){
+export function Filters({ customStyles, onNewRegisterButtonClick }: FiltersProps){
 
   return(
     <div className="filters-container" style={customStyles}>
@@ -31,6 +32,13 @@ export function Filters({ customStyles }: FiltersProps){
         <option value="amount">Quantidade</option>
         <option value="classify">Classificação</option>
       </select>
+
+      <button 
+        className="button"
+        onClick={()=>{onNewRegisterButtonClick(true);}}
+      >
+        Novo lançamento
+      </button>
     </div>
   )
 }
