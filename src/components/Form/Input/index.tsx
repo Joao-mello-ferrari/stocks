@@ -20,7 +20,7 @@ const icons = {
 
 export function Input({ name, label, type="text" }:InputProps){
   return(
-    <label htmlFor={name}>
+    <label className="label" htmlFor={name}>
       <input 
         type={type} 
         placeholder={label}

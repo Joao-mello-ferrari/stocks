@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 
 import Modal from 'react-modal';
-import { Input } from '../Form/Input';
+import { Form } from '../Form';
 
 import './styles.scss'
 
@@ -28,34 +28,8 @@ export function NewRegisterModal({ open, onClose }:ModalProps){
         <button onClick={closeModal}>close</button> */}
         {/* <div onClick={()=>{onClose(false);}}>I am a modal</div> */}
         <main className="modal-content-container">
-          <h2>Cadastre uma nova ferramenta</h2>
-          <form className="modal-form">
-            <Input
-              name='class'
-              label='Classe do ativo'
-            />
-            <Input
-              name='name'
-              label='Nome do ativo'
-            />
-            <Input
-              name='amount'
-              label='Quantidade'
-            />
-            <Input
-              name='price'
-              label='Preço unitário'
-            />
-            <Input
-              name='total'
-              label='Total'
-            />
-            <Input
-              name='date'
-              label='Data'
-              type="date"
-            />
-          </form>
+          <h2>Cadastre um novo ativo</h2>
+          <Form/>
         </main>
       </Modal>
   )
