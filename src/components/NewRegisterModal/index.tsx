@@ -29,7 +29,7 @@ export function NewRegisterModal({ open, onClose }:ModalProps){
         {/* <div onClick={()=>{onClose(false);}}>I am a modal</div> */}
         <main className="modal-content-container">
           <h2>Cadastre um novo ativo</h2>
-          <Form/>
+          <Form closeModalByForm={onClose}/>
         </main>
       </Modal>
   )

@@ -13,10 +13,10 @@
   position: absolute;
   display: flex;
   align-items: center;
-  top: 14vh;
-  left: 14vw;
-  right: 14vw;
-  bottom: 14vh;
+  top: 10vh;
+  left: 10vw;
+  right: 10vw;
+  bottom: 10vh;
   border-radius: 0.4rem;
   background-color: $bg-extra-light;
 }
@@ -25,7 +25,7 @@
   flex: 1;
   display: flex;
   padding: 1rem 2rem;
-  height: calc(72vh - 2rem);
+  height: calc(80vh - 2rem);
   flex-direction: column;
 
   h2{

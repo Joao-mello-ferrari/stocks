@@ -25,7 +25,7 @@ export function Dashboard(){
         customStyles={ isResumeClosed ? { marginTop: '1rem'} : {}}
         onNewRegisterButtonClick={setIsAddNewRegisterModalOpen}
       />
-      <Table/>
+      <Table moreRows={isResumeClosed} />
     </div>
   )
 }

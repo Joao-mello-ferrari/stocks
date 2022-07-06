@@ -1,8 +1,13 @@
+import { Dispatch, SetStateAction } from "react";
 import { Input } from "./Input";
 
 import './styles.scss'
 
-export function Form(){
+interface FormProps{
+  closeModalByForm: Dispatch<SetStateAction<boolean>> 
+}
+
+export function Form({ closeModalByForm }: FormProps){
   return(
     <form className="form" onSubmit={()=>{}}>
       <fieldset>
@@ -40,9 +45,25 @@ export function Form(){
       </fieldset>
 
       <fieldset>
-        <button type="submit" className="submit">Cadastrar</button>
-        <button type="reset">Limpar</button>
-        <button type="button">Voltar</button>
+        <button 
+          type="submit" 
+          className="submit"
+        >
+          Cadastrar
+        </button>
+        <button 
+          type="reset" 
+          className="reset"
+        >
+          Limpar
+        </button>
+        <button 
+          type="button" 
+          className="back"
+          onClick={()=>{ closeModalByForm(false); }}
+        >
+          Voltar
+        </button>
       </fieldset>
     </form>
   )
