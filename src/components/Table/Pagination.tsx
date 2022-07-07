@@ -62,8 +62,7 @@ export function Pagination({
         ))
       }
 
-      { startButtonsArray[startButtonsArray.length-1] < page-1 && 
-        startButtonsArray.length > 1 &&
+      { startButtonsArray[startButtonsArray.length-1] < page-adjacentNumToRender-1 &&
         <span> ... </span>
       }
 
@@ -92,8 +91,7 @@ export function Pagination({
         })
       }
 
-      { endButtonsArray[0] > page+1 && 
-        endButtonsArray.length > 1 &&
+      { endButtonsArray[0] > page+adjacentNumToRender+1 &&
         <span> ... </span>
       }
 

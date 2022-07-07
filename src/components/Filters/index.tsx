@@ -5,9 +5,14 @@ import './styles.scss'
 interface FiltersProps{
   customStyles: {},
   onNewRegisterButtonClick: (state: boolean) => void;
+  changeFormMethod: (method: 'POST' | 'PUT') => void;
 }
 
-export function Filters({ customStyles, onNewRegisterButtonClick }: FiltersProps){
+export function Filters({ 
+  customStyles, 
+  onNewRegisterButtonClick,
+  changeFormMethod 
+}: FiltersProps){
 
   return(
     <div className="filters-container" style={customStyles}>
@@ -35,7 +40,10 @@ export function Filters({ customStyles, onNewRegisterButtonClick }: FiltersProps
 
       <button 
         className="button"
-        onClick={()=>{onNewRegisterButtonClick(true);}}
+        onClick={()=>{
+          onNewRegisterButtonClick(true);
+          changeFormMethod('POST');
+        }}
       >
         Novo lançamento
       </button>

@@ -2,6 +2,7 @@ import { gapi } from 'gapi-script'
 import { useEffect } from 'react'
 
 import { AuthContenxtProvider } from './contexts/authContext'
+import { RegistersContenxtProvider } from './contexts/registersContext'
 import { Routes } from "./Routes"
 
 import './styles/App.module.scss'
@@ -20,7 +21,9 @@ function App() {
 
   return (
     <AuthContenxtProvider>
+      <RegistersContenxtProvider>
       <Routes/>
+      </RegistersContenxtProvider>
     </AuthContenxtProvider>
   )
 }

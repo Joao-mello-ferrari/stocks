@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { Input } from "./Input";
 
-import './styles.scss'
+import '../styles.scss'
 
 interface FormProps{
   closeModalByForm: Dispatch<SetStateAction<boolean>> 

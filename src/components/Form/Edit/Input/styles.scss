@@ -1,0 +1,68 @@
+@import '../../../../styles/Variables.scss';
+
+.edit-input-label{
+  width: 20rem;
+  height: 2.8rem;
+  display: flex;
+  border: 2px solid $header;
+  border-radius: 0.4rem;
+  transition: border-color 0.2s;
+  position: relative;
+
+  &:focus-within{
+    border-color: $theme;
+    div{ 
+      border-color: $theme; 
+      svg{
+        color: $theme
+      }
+    }
+  }
+
+  input:not(:placeholder-shown) + div svg{
+    color: $theme;
+  }
+
+  input:not(:placeholder-shown) + div + span{
+    opacity: 1;
+    top: -0.6rem;
+  }
+
+  div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: 2px solid $header;
+    width: 4rem;
+    height: 3rem;
+    margin-top: -.1rem;
+    transition: border-color 0.2s;
+    font-size: 1.25rem;
+    color: $header;
+  }
+
+  span{
+    position: absolute;
+    top: 0.6rem;
+    left: 0.4rem;
+    font-size: 0.9rem;
+    background: $bg-extra-light;
+    color: $text-light;
+    padding: 0 0.2rem;
+
+    opacity: 0;
+    
+    transition: top 0.4s, opacity 0.4s;
+  }
+
+  input{
+    width: 100%;
+    background: transparent;
+    border: 0;
+    outline: none;
+    color: $text;
+    padding: 0 0.6rem;
+    font-size: 1.1rem;
+  }
+
+}

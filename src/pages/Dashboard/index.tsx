@@ -5,27 +5,34 @@ import { Header } from '../../components/Header'
 import { Resume } from "../../components/Resume"
 import { Filters } from "../../components/Filters"
 import { Table } from "../../components/Table"
-import { NewRegisterModal } from '../../components/NewRegisterModal'
+import { NewRegisterModal } from '../../components/RegisterModal'
 
 import './styles.scss'
 
 export function Dashboard(){
   const [isResumeClosed, setIsResumeClosed] = useState(false);
-  const [isAddNewRegisterModalOpen, setIsAddNewRegisterModalOpen] = useState(false);
-  
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [formMethod, setFormMethod] = useState<'POST' | 'PUT'>('POST');
+
   return(
     <div className="container">
       <NewRegisterModal 
-        open={isAddNewRegisterModalOpen} 
-        onClose={setIsAddNewRegisterModalOpen}
+        open={isRegisterModalOpen} 
+        onClose={setIsRegisterModalOpen}
+        method={formMethod}
       />
       <Header/>
       <Resume onClose={setIsResumeClosed} isResumeCLosed={isResumeClosed}/>
       <Filters 
         customStyles={ isResumeClosed ? { marginTop: '1rem'} : {}}
-        onNewRegisterButtonClick={setIsAddNewRegisterModalOpen}
+        onNewRegisterButtonClick={setIsRegisterModalOpen}
+        changeFormMethod={setFormMethod}
       />
-      <Table moreRows={isResumeClosed} />
+      <Table 
+        moreRows={isResumeClosed} 
+        openRegisterEditForm={setIsRegisterModalOpen}
+        changeFormMethod={setFormMethod}
+      />
     </div>
   )
 }

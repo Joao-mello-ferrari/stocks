@@ -18,9 +18,9 @@ const icons = {
   date: <FiCalendar/>
 }
 
-export function Input({ name, label, type="text" }:InputProps){
+export function Input({ name, label, type="text", }:InputProps){
   return(
-    <label className="label" htmlFor={name}>
+    <label className="create-label" htmlFor={name}>
       <input 
         type={type} 
         placeholder={label}

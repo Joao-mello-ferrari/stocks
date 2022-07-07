@@ -1,6 +1,6 @@
-@import '../../../styles/Variables.scss';
+@import '../../../../styles/Variables.scss';
 
-.label{
+.create-label{
   width: 20rem;
   height: 2.8rem;
   display: flex;
@@ -28,6 +28,11 @@
     top: -0.6rem;
   }
 
+  input::placeholder{
+    color: $text;
+    font-size: 0.9rem;
+  }
+
   div{
     display: flex;
     justify-content: center;
@@ -37,7 +42,7 @@
     height: 3rem;
     margin-top: -.1rem;
     transition: border-color 0.2s;
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     color: $header;
   }
 
