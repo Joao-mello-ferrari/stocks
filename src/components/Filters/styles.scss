@@ -10,6 +10,8 @@
 
   .input-container{
     position: relative;
+    width: 15.8rem;
+    & + .input-container{ margin-left: 3rem; }
 
     svg{
       position: absolute;
@@ -19,9 +21,34 @@
       background: $bg;
       padding: 0 0.2rem 0 0.6rem;
     }
+
+    .input-dropdown{
+      position: absolute;
+      background: $bg;
+
+      padding: 1rem;
+      border-radius: 0.6rem;
+      border: 2px solid $text;
+      border-top: 0;
+
+      width: 12rem;
+      left: 0.7rem;
+      z-index: 1;
+
+      list-style-type: none;
+      transition: all 0.05s;
+      
+      li {
+        padding: 0.2rem 0.6rem;
+        border-radius: 0.3rem;
+        &:hover{
+          background: $bg-extra-light;
+        }
+      }
+    }
   }
 
-  .input, .select{
+  .input{
     border: 1.5px solid $text;
     border-radius: 0.5rem;
     outline: none;
@@ -34,18 +61,6 @@
     padding: 0.1rem 0.8rem;
 
     font-size: 1rem;
-    
-  }
-
-  .select{
-    height: 3.2rem;
-    margin-left: 2rem;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
-    background-repeat: no-repeat;
-    background-position-x: 95%;
-    background-position-y: 45%;
   }
 
   .button{
