@@ -21,12 +21,12 @@ const icons = {
 
 export function Input({ name, label, defaultValue, type="text", }:InputProps){
   return(
-    <label className="edit-input-label" htmlFor={name}>
+    <label className="edit-input-label" htmlFor={label}>
       <input 
         type={type} 
         placeholder={label}
         defaultValue={defaultValue}
-        id={name}
+        id={label}
       />
       <div>{icons[name]}</div>
       <span>{label}</span>

@@ -14,9 +14,9 @@ export function Form({ closeModalByForm }: FormProps){
   // const {  } = useAuth();
   const { registerToEdit: r } = useRegisters();
   
-  function value(value: string){
+  function value(value: string | number){
     if(!value) return 'Não há';
-    return value
+    return String(value)
   }
 
   return(

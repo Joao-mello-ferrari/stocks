@@ -33,6 +33,10 @@
     font-size: 0.9rem;
   }
 
+  input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+
   div{
     display: flex;
     justify-content: center;

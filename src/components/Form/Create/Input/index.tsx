@@ -1,9 +1,10 @@
+import { DetailedHTMLProps, InputHTMLAttributes } from 'react';
 import { FiCalendar, FiDollarSign, FiEdit3, 
   FiFileText, FiLayers, FiTag } from 'react-icons/fi';
 
 import './styles.scss'
 
-interface InputProps{
+interface InputProps extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>{
   name: 'name' | 'class' | 'amount' | 'price' | 'total' | 'date';
   label: string;
   type?: string;
@@ -18,13 +19,14 @@ const icons = {
   date: <FiCalendar/>
 }
 
-export function Input({ name, label, type="text", }:InputProps){
+export function Input({ name, label, type="text", ...rest }:InputProps){
   return(
-    <label className="create-label" htmlFor={name}>
+    <label className="create-label" htmlFor={label}>
       <input 
         type={type} 
         placeholder={label}
-        id={name}
+        id={label}
+        { ...rest }
       />
       <div>{icons[name]}</div>
       <span>{label}</span>
