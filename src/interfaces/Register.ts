@@ -5,3 +5,4 @@ export interface Register{
   price: number;
   date: string;
 };
+

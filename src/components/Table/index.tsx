@@ -57,8 +57,6 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
 
   },[moreRows]);
   
-  console.log(rowsPerPage)
-
   const handleNavigationByInput:React.KeyboardEventHandler<HTMLInputElement> = (e) =>{
    if(e.key === 'Enter'){
     const input = navigationInputRef?.current
@@ -97,15 +95,15 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
       name: 'MGLU3',
       amount: 10,
       price: 3,
-      date: '12/12/2022'
+      date: '2021-12-12T03:06:28.000Z'
     },
     {
       id: 2,
       asset_class: 'Ações',
       name: 'CASH3',
       amount: 12,
-      price: 12,
-      date: '12/11/2022'
+      price: 12000,
+      date: '2022-12-12T03:06:28.000Z'
     },
   ]
 
