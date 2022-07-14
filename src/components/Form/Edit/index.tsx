@@ -5,6 +5,7 @@ import { useAuth } from "../../../contexts/authContext";
 import { useRegisters } from "../../../contexts/registersContext";
 import { calculateTotal, formatCurrency, formatNumber } from "../../../helpers/numbersFormatters";
 import { onSubmitInputProps } from "../../../interfaces/Submit";
+import { getDateConverted, isoDateFromInput } from "../../../helpers/dateConversion";
 
 import '../styles.scss'
 
@@ -16,14 +17,15 @@ export function Form({ closeModalByForm }: FormProps){
   // const {  } = useAuth();
   const { registerToEdit: r } = useRegisters();
   
-  const [priceInput, setPriceInput] = useState(formatCurrency(String(r?.price)));
+  const [priceInput, setPriceInput] = useState(formatCurrency(String(r?.price), false));
   const [amountInput, setAmountInput] = useState(formatNumber(String(r.amount)));
+
+  const editFormRef = useRef() as MutableRefObject<HTMLFormElement>;
 
   function value(value: string | number){
     if(!value) return 'Não há';
     return String(value)
   }
-  const editFormRef = useRef() as MutableRefObject<HTMLFormElement>;
 
   function handleEditRegister(e: FormEvent){
     e.preventDefault();
@@ -39,20 +41,24 @@ export function Form({ closeModalByForm }: FormProps){
         hasEditedAtLeastOneField = true;
       } 
   
-      if(i.name === 'date'){
-        const [y,m,d] = (i.value.split('-')).map(i=>Number(i));
-        return new Date(y,m-1,d).toISOString();
-      }
+      if(i.name === 'date') return isoDateFromInput(i.value);
       return editFormData.append(i.name, i.value);
     });
-    console.log(hasEditedAtLeastOneField)
+
+    if(!hasEditedAtLeastOneField){
+      // addToast('sadasdasd')
+      return
+    }
+
+    // post
+    // addToast
     
     function getDefaultValues(key: 'asset_class' | 'name' | 'amount' | 'price' | 'total' | 'date'): string{
       switch(key){
         case 'amount': return formatNumber(String(r?.amount));
         case 'price': return formatCurrency(String(r?.price));
         case 'total': return formatCurrency(String(r?.amount * r?.price));
-        case 'date': return getDefaultDate();
+        case 'date': return getDateConverted(r?.date);
         default: return r[key];
       }
     }
@@ -60,7 +66,6 @@ export function Form({ closeModalByForm }: FormProps){
 
   function handlePriceChange(e: ChangeEvent<HTMLInputElement>){
     const price = e.target.value;
-    console.log(price)
     const newPrice = formatCurrency(price);
     setPriceInput(newPrice);
   }
@@ -79,7 +84,6 @@ export function Form({ closeModalByForm }: FormProps){
   function getPrice(){
     const mainValue = priceInput;
     const defaultValue = formatCurrency(String(r?.price));
-    
     return mainValue || defaultValue;
   }
 
@@ -94,14 +98,6 @@ export function Form({ closeModalByForm }: FormProps){
     const mainValue = calculateTotal(priceInput, amountInput);
     const defaultValue = calculateTotal(getPrice(), getAmount());
     return mainValue || defaultValue;
-  }
-
-  function getDefaultDate(){
-    const date = new Date(r?.date);
-    const y = date.getFullYear();
-    const m = date.getMonth();
-    const d = date.getDate();
-    return `${y}-${m+1}-${d}`;
   }
 
   return(
@@ -145,7 +141,7 @@ export function Form({ closeModalByForm }: FormProps){
           name='date'
           label='Data'
           type="date"
-          defaultValue={getDefaultDate()}
+          defaultValue={getDateConverted(r?.date)}
         />
       </fieldset>
 

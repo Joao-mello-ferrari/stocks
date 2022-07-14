@@ -5,10 +5,12 @@ import { Pagination } from './Pagination'
 import { EmptyRows } from './EmptyRows';
 
 import { useRegisters } from '../../contexts/registersContext';
+import { getDateConverted } from '../../helpers/dateConversion';
 
 import { Register } from '../../interfaces/Register';
 
 import './styles.scss'
+import { formatCurrency, formatNumber } from '../../helpers/numbersFormatters';
 
 
 interface TableProps{
@@ -32,8 +34,17 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
 
   const navigationInputRef = useRef() as MutableRefObject<HTMLInputElement>;
   
-  const { storeRegisterToEdit } = useRegisters(); 
+  const { 
+    storeRegisterToEdit, 
+    storeAllRegisters, 
+    storeFilteredRegisters,
+    filteredRegisters 
+  } = useRegisters(); 
 
+  useEffect(()=>{
+    storeAllRegisters(registers);
+    storeFilteredRegisters(registers);
+  },[])
 
   useEffect(()=>{
     let newRowsNum = -1;
@@ -90,7 +101,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
   
   const registers = [
     {
-      id: 1,
+      id: '1',
       asset_class: 'Ações',
       name: 'MGLU3',
       amount: 10,
@@ -98,7 +109,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
       date: '2021-12-12T03:06:28.000Z'
     },
     {
-      id: 2,
+      id: '2',
       asset_class: 'Ações',
       name: 'CASH3',
       amount: 12,
@@ -121,7 +132,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
           </tr>
         </thead>
         <tbody>
-          { registers.slice(currentPage, currentPage + rowsPerPage)
+          { filteredRegisters.slice(currentPage, currentPage + rowsPerPage)
             .map((register)=>(
               <tr 
                 key={register.id} 
@@ -130,10 +141,10 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
               >
                 <td>{register.asset_class}</td>
                 <td>{register.name}</td>
-                <td>{register.amount}</td>
-                <td>{register.price}</td>
-                <td>{register.price * register.amount}</td>
-                <td>{register.date}</td>
+                <td>{formatNumber(String(register.amount))}</td>
+                <td>{formatCurrency(String(register.price))}</td>
+                <td>{formatCurrency(String(register.price * register.amount))}</td>
+                <td>{getDateConverted(register.date, true)}</td>
                 <td className="buttons-container empty-row">
                   <FiTool onClick={()=>{handleRegisterEdit(register)}}/>
                   <FiXSquare/>

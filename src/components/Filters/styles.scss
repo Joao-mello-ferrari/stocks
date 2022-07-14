@@ -12,6 +12,7 @@
     position: relative;
     width: 15.8rem;
     & + .input-container{ margin-left: 3rem; }
+    &.operand{ width: 5rem; }
 
     svg{
       position: absolute;
@@ -38,6 +39,12 @@
       list-style-type: none;
       transition: all 0.05s;
       
+      &.operand{
+        width: 1.6rem;
+        padding: 0.8rem;
+        li{ padding: 0.1rem 0.5rem; }
+      }
+      
       li {
         padding: 0.2rem 0.6rem;
         border-radius: 0.3rem;
@@ -61,6 +68,11 @@
     padding: 0.1rem 0.8rem;
 
     font-size: 1rem;
+
+    &.operand{
+      width: 3rem;
+      font-size: 1.4rem;
+    }
   }
 
   .button{

@@ -1,4 +1,4 @@
-export function formatCurrency(value: string): string{
+export function formatCurrency(value: string, shouldNotDivide=true): string{
   let valueToFormat = value;
   if(value.length !== 1){
     if(value.includes('R$')) value = value.slice(3);
@@ -15,6 +15,7 @@ export function formatCurrency(value: string): string{
     }
     valueToFormat = integer + '.' + decimal;
   }
+  else if(!shouldNotDivide) valueToFormat = String(Number(value)/100);
   
   if(!(/^[0-9]+$/.test(value))) valueToFormat = '';
 
@@ -57,4 +58,13 @@ export function calculateTotal(price_in: string, amount_in: string): string{
   const total = formatter.format(Number(price)*Number(amount));
 
   return total;
+}
+
+export function getRawCurVal(value: string | number){
+  let val: string|number = String(value);
+  if(val.includes('R$')) val = val.slice(3);
+
+  val = val.replaceAll(',','').replaceAll('.','');
+  val = Number(val)/100;
+  return String(val);
 }

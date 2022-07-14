@@ -23,16 +23,15 @@ export function Form({ closeModalByForm }: FormProps){
     const elements = originalElements
       .filter(item => item.tagName === 'INPUT') as unknown as onSubmitInputProps[];
     
-    const editFormData = new FormData();
+    const addFormData = new FormData();
 
     elements.map(i=>{
       if(i.name === 'date'){
         const [y,m,d] = (i.value.split('-')).map(i=>Number(i));
         let a = new Date(y,m-1,d,1,1)
-        console.log(a.toISOString())
         return new Date(y,m-1,d).toISOString();
       }
-      return editFormData.append(i.name, i.value)
+      return addFormData.append(i.name, i.value)
     });
   }
 
