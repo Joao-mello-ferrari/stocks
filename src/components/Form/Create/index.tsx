@@ -1,21 +1,24 @@
-import { ChangeEvent, ChangeEventHandler, Dispatch, FormEvent, MutableRefObject, SetStateAction, useRef, useState } from "react";
+import { ChangeEvent, Dispatch, FormEvent, MutableRefObject, SetStateAction, useRef, useState } from "react";
 import { Input } from "./Input";
 
-import { formatCurrency, formatNumber, calculateTotal } from '../../../helpers/numbersFormatters'
+import { formatCurrency, formatNumber, calculateTotal, getRawCurVal, getRawNumberVal } from '../../../helpers/numbersFormatters'
 
-import '../styles.scss'
+import { useToast } from "../../../contexts/toastContext";
 import { onSubmitInputProps } from "../../../interfaces/Submit";
 
+import '../styles.scss'
+
 interface FormProps{
-  closeModalByForm: Dispatch<SetStateAction<boolean>> 
+  closeModalByForm: Dispatch<SetStateAction<boolean>>;
 }
 
 export function Form({ closeModalByForm }: FormProps){
   const [priceInput, setPriceInput] = useState('');
   const [amountInput, setAmountInput] = useState('');
 
-
   const addFormRef = useRef() as MutableRefObject<HTMLFormElement>;
+
+  const { addToast } = useToast(); 
 
   function handleAddRegister(e: FormEvent){
     e.preventDefault();
@@ -26,18 +29,27 @@ export function Form({ closeModalByForm }: FormProps){
     const addFormData = new FormData();
 
     elements.map(i=>{
-      if(i.name === 'date'){
-        const [y,m,d] = (i.value.split('-')).map(i=>Number(i));
-        let a = new Date(y,m-1,d,1,1)
-        return new Date(y,m-1,d).toISOString();
+      switch(i.name){
+        case 'price': return addFormData.append(i.name, getRawCurVal(i.value));
+        case 'amount': return addFormData.append(i.name, getRawNumberVal(i.value));
+        case 'total': return addFormData.append(i.name, getRawCurVal(i.value));
+        case 'date':
+          const [y,m,d] = (i.value.split('-')).map(i=>Number(i));
+          return new Date(y,m-1,d).toISOString();
+        default: return addFormData.append(i.name, i.value);
       }
-      return addFormData.append(i.name, i.value)
+    });
+
+    addToast({ 
+      type: 'success', 
+      title: 'Lançamento', 
+      message: 'Cadastrado com sucesso!' 
     });
   }
 
   function handlePriceChange(e: ChangeEvent<HTMLInputElement>){
     const price = e.target.value;
-    const newPrice = formatCurrency(price);
+    const newPrice = formatCurrency(price, false);
     setPriceInput(newPrice);
   }
 

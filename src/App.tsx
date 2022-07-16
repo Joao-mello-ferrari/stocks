@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 
 import { AuthContenxtProvider } from './contexts/authContext'
 import { RegistersContenxtProvider } from './contexts/registersContext'
+import { ToastContextProvider } from './contexts/toastContext'
 import { Routes } from "./Routes"
 
 import './styles/App.module.scss'
@@ -22,7 +23,9 @@ function App() {
   return (
     <AuthContenxtProvider>
       <RegistersContenxtProvider>
-      <Routes/>
+        <ToastContextProvider>
+          <Routes/>
+        </ToastContextProvider>
       </RegistersContenxtProvider>
     </AuthContenxtProvider>
   )

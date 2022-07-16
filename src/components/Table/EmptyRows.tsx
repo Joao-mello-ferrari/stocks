@@ -18,7 +18,7 @@ export function EmptyRows({
 
   function getLastPage(){
     const possibleLast = Math.floor(totalRegsCount/rowsPerPage);
-    if(totalRegsCount%rowsPerPage === 0) return possibleLast-1;
+    if(totalRegsCount%rowsPerPage === 0) return Math.max(0,possibleLast-1);
     return possibleLast;
   }
 

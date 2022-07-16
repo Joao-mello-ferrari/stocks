@@ -2,6 +2,7 @@ import { ChangeEvent, Dispatch, FormEvent, MutableRefObject, SetStateAction, use
 import { Input } from "./Input";
 
 import { useAuth } from "../../../contexts/authContext";
+import { useToast } from "../../../contexts/toastContext";
 import { useRegisters } from "../../../contexts/registersContext";
 import { calculateTotal, formatCurrency, formatNumber } from "../../../helpers/numbersFormatters";
 import { onSubmitInputProps } from "../../../interfaces/Submit";
@@ -14,13 +15,14 @@ interface FormProps{
 }
 
 export function Form({ closeModalByForm }: FormProps){
-  // const {  } = useAuth();
   const { registerToEdit: r } = useRegisters();
   
-  const [priceInput, setPriceInput] = useState(formatCurrency(String(r?.price), false));
+  const [priceInput, setPriceInput] = useState(formatCurrency(String(r?.price)));
   const [amountInput, setAmountInput] = useState(formatNumber(String(r.amount)));
-
+  
   const editFormRef = useRef() as MutableRefObject<HTMLFormElement>;
+  
+  const { addToast } = useToast(); 
 
   function value(value: string | number){
     if(!value) return 'Não há';
@@ -46,7 +48,11 @@ export function Form({ closeModalByForm }: FormProps){
     });
 
     if(!hasEditedAtLeastOneField){
-      // addToast('sadasdasd')
+      addToast({ 
+        type: 'warning', 
+        title: 'Edição', 
+        message: 'É preciso alterar ao menos um campo!' 
+      });
       return
     }
 
@@ -84,6 +90,7 @@ export function Form({ closeModalByForm }: FormProps){
   function getPrice(){
     const mainValue = priceInput;
     const defaultValue = formatCurrency(String(r?.price));
+    console.log(mainValue)
     return mainValue || defaultValue;
   }
 

@@ -8,19 +8,33 @@
 
   transition: margin 0.6s;
 
+  .label-overflow-div{
+    margin-left: 1.5rem;
+    padding-left: 1.5rem;
+    display: flex;
+
+    &.overflow{ overflow: hidden; }
+  }
+
   .input-container{
     position: relative;
-    width: 15.8rem;
+    width: 17.8rem;
+    
     & + .input-container{ margin-left: 3rem; }
-    &.operand{ width: 5rem; }
+    &.operand{ 
+      width: 5rem; 
+      transform: translateX(-7rem);
+      transition: transform 0.4s;
+    }
+    &.visible{ transform: translateX(0); }
 
     svg{
       position: absolute;
-      top: 1rem;
+      top: 0.7rem;
       right: 0.8rem;
       font-size: 1.2rem;
       background: $bg;
-      padding: 0 0.2rem 0 0.6rem;
+      padding: 0.3rem 0.3rem 0.3rem 0.6rem;
     }
 
     .input-dropdown{
@@ -32,7 +46,7 @@
       border: 2px solid $text;
       border-top: 0;
 
-      width: 12rem;
+      width: 14rem;
       left: 0.7rem;
       z-index: 1;
 
@@ -48,32 +62,34 @@
       li {
         padding: 0.2rem 0.6rem;
         border-radius: 0.3rem;
+        font-size: 1.1rem;
         &:hover{
           background: $bg-extra-light;
         }
       }
     }
-  }
-
-  .input{
-    border: 1.5px solid $text;
-    border-radius: 0.5rem;
-    outline: none;
     
-    color: $text;
-    background: $bg;
-    
-    height: 2.8rem;
-    width: 14rem;
-    padding: 0.1rem 0.8rem;
-
-    font-size: 1rem;
-
-    &.operand{
-      width: 3rem;
-      font-size: 1.4rem;
+    .input{
+      border: 1.5px solid $text;
+      border-radius: 0.5rem;
+      outline: none;
+      
+      color: $text;
+      background: $bg;
+      
+      height: 2.8rem;
+      width: 16rem;
+      padding: 0.1rem 0.8rem;
+  
+      font-size: 1.1rem;
+  
+      &.operand{
+        width: 3rem;
+        font-size: 1.4rem;
+      }
     }
   }
+
 
   .button{
     background: $theme;
@@ -84,7 +100,7 @@
     height: 2.4rem;
     width: 10rem;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-left: auto;
   
     transition: opacity 0.2s;

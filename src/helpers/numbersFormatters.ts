@@ -68,3 +68,14 @@ export function getRawCurVal(value: string | number){
   val = Number(val)/100;
   return String(val);
 }
+
+export function getRawNumberVal(value: string | number){
+  let val: string|number = String(value);
+  return val.replaceAll(',','').replaceAll('.','');
+}
+
+export function compareNumbers(a:number, b:number): number{
+  if(a<b) return -1;
+  if(a>b) return 1;
+  return 0;
+}

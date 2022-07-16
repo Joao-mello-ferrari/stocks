@@ -15,7 +15,7 @@ interface ModalProps{
 }
 
 
-export function NewRegisterModal({ open, onClose, method }:ModalProps){
+export function RegisterFormModal({ open, onClose, method }:ModalProps){
 
   if(method === 'POST'){
     return(

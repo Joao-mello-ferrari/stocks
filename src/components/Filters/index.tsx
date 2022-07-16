@@ -1,8 +1,12 @@
-import React, { MutableRefObject, ReactElement, useEffect, useRef, useState } from 'react';
+import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
+
 import { FiFilter, FiChevronDown } from 'react-icons/fi'
+
 import { useRegisters } from '../../contexts/registersContext';
-import { compareDates, getDateConverted, isoDateFromInput } from '../../helpers/dateConversion';
-import { formatCurrency, formatNumber, getRawCurVal } from '../../helpers/numbersFormatters';
+import { useToast } from '../../contexts/toastContext';
+
+import { compareDates, isoDateFromInput } from '../../helpers/dateConversion';
+import { compareNumbers, formatCurrency, formatNumber, getRawCurVal, getRawNumberVal } from '../../helpers/numbersFormatters';
 import { utf8ToAscii } from '../../helpers/textFormatter';
 
 import './styles.scss'
@@ -20,7 +24,7 @@ interface FilterTypeOption{
 
 interface Operand{
   value: -1 | 0 | 1;
-  icon: ReactElement;
+  icon: '≤' | '≥' | '=' | '<' | '>';
 }
 
 interface CustomClickEvent extends React.MouseEvent<HTMLLIElement, MouseEvent>{
@@ -42,23 +46,25 @@ interface CustomClickEventOperand extends React.MouseEvent<HTMLLIElement, MouseE
   }
 }
 
+const baseFilterTypeOptions: FilterTypeOption[] = [
+  { value: 'name', text: 'Nome do ativo' },
+  { value: 'date', text: 'Data da compra / venda' },
+  { value: 'price', text: 'Valor' },
+  { value: 'amount', text: 'Quantidade' },
+  { value: 'asset_class', text: 'Classificação' },
+];
+
+const operands: Operand[] = [
+  { value: 0, icon: '=' },
+  { value: -1, icon: '<' },
+  { value: 1, icon: '>' }
+]
+
 export function Filters({ 
   customStyles, 
   onNewRegisterButtonClick,
   changeFormMethod 
 }: FiltersProps){
-  const baseFilterTypeOptions: FilterTypeOption[] = [
-    { value: 'name', text: 'Nome do ativo' },
-    { value: 'date', text: 'Data da compra / venda' },
-    { value: 'price', text: 'Valor' },
-    { value: 'amount', text: 'Quantidade' },
-    { value: 'asset_class', text: 'Classificação' },
-  ];
-  const operands: Operand[] = [
-    { value: 0, icon:<span>=</span>  },
-    { value: -1, icon:<span>≤</span>  },
-    { value: 1, icon:<span>≥</span>  }
-  ]
 
   const [filterValue, setFilterValue] = useState('');
   const [filterTypeValue, setFilterTypeValue] = useState('')
@@ -69,26 +75,40 @@ export function Filters({
   const [operand, setOperand] = useState(0);
   const [isOperandDropDownOpen, setIsOperandDropDownOpen] = useState(false);
 
-  
-  const { allRegisters, storeFilteredRegisters } = useRegisters();
+  const [isWarningToastEnabled, setIsWarningToastEnabled] = useState(true);
+  const [overflow, setOverflow] = useState('overflow');
 
-  const filterInputRef = useRef() as MutableRefObject<HTMLInputElement>;
-  const ulDropdownRef = useRef() as MutableRefObject<HTMLUListElement>;
-  const ulOperandDropdownRef = useRef() as MutableRefObject<HTMLUListElement>;
+  const { allRegisters, storeFilteredRegisters } = useRegisters();
+  const { addToast } = useToast();
+
+  const filterInputRef = useRef() as MutableRefObject<HTMLLabelElement>;
+  const filterTypeInputRef = useRef() as MutableRefObject<HTMLLabelElement>;
+  const operandInputRef = useRef() as MutableRefObject<HTMLLabelElement>;
+
 
   useEffect(()=>{
     window.addEventListener('mousedown',(e)=>{
-      const ul = ulDropdownRef.current;
-      setIsDropDownOpen((state)=>{
-        if(!ul?.contains(e.target as Node) && state) return false
-        return state
-      });
-      setIsOperandDropDownOpen((state)=>{
-        if(!ul?.contains(e.target as Node) && state) return false
-        return state
-      });
+      const filterTypeLabel = filterTypeInputRef.current;
+      const operandLabel = operandInputRef.current;
+      
+      setTimeout(()=>{
+        setIsDropDownOpen((state)=>{
+          if(!filterTypeLabel?.contains(e.target as Node) && state) return false
+          return state;
+        });
+        setIsOperandDropDownOpen((state)=>{
+          if(!operandLabel?.contains(e.target as Node) && state) return false
+          return state
+        });
+      },100);
     })
-  },[])
+  },[]);
+
+  useEffect(()=>{
+    const shouldShowOperands = showOperands();
+    if(shouldShowOperands) setTimeout(()=>{ setOverflow('') }, 400);
+    else setOverflow('overflow');
+  },[filterTypeKey]);
 
   function handleFilterTypeValueChange(e: React.ChangeEvent<HTMLInputElement>){
     const newFilterTypeValue = e.target.value
@@ -111,20 +131,36 @@ export function Filters({
       filterInputRef?.current?.focus()
       setIsDropDownOpen(false)
     },100);
+    setTimeout(()=>{ setFilterTypeOptions(baseFilterTypeOptions); },250);
   }
 
   function handleSelectOperand(e: CustomClickEventOperand){
     setOperand(e.target.value);
-    setFilterValue('');
+    filterTable(null, e.target.value);
     setTimeout(()=>{
       filterInputRef?.current?.focus()
       setIsOperandDropDownOpen(false)
     },100);
   }
   
-  function filterTable(e: React.ChangeEvent<HTMLInputElement>){
-    const searchVal = e.target.value;
-    if(filterTypeKey === '') return;
+  function filterTable(e: React.ChangeEvent<HTMLInputElement> | null, oper=operand){
+    let searchVal = null;
+
+    if(e === null) searchVal = filterValue;
+    else searchVal = e.target.value; 
+
+    if(filterTypeKey === ''){
+      if(isWarningToastEnabled){
+        setIsWarningToastEnabled(false);
+        addToast({ 
+          type: 'warning', 
+          title: 'Filtragem', 
+          message: 'Selecione um tipo de filtro!' 
+        });
+        setTimeout(()=>{ setIsWarningToastEnabled(true); },4000);
+      }
+      return;
+    };
     if(!searchVal){
       setFilterValue(searchVal);
       storeFilteredRegisters(allRegisters);
@@ -146,7 +182,7 @@ export function Filters({
         if(!(/^[0-9]+$/.test(searchVal[searchVal.length-1]))){
           auxAmountVal = searchVal.slice(0,searchVal.length-1);
         }
-        basedSearchVal = getRawCurVal(auxAmountVal);
+        basedSearchVal = getRawNumberVal(auxAmountVal);
         newInputValue = formatNumber(auxAmountVal);
         break;
       case 'date':
@@ -158,12 +194,12 @@ export function Filters({
         newInputValue = searchVal;
         break;
     }
-
+    
     const newFilteredRegs = allRegisters.filter((reg)=>{
       switch(filterTypeKey){
-        case 'price': return reg.price === Number(basedSearchVal);
-        case 'amount': return reg.amount === Number(basedSearchVal);
-        case 'date': return compareDates(basedSearchVal, reg.date) === 0;
+        case 'price': return compareNumbers(reg.price, +basedSearchVal) === oper;
+        case 'amount': return compareNumbers(reg.amount, +basedSearchVal) === oper;
+        case 'date': return compareDates(reg.date, basedSearchVal) === oper;
         default: 
           const regVal = utf8ToAscii(reg[filterTypeKey]).toLocaleLowerCase();
           return regVal.includes(basedSearchVal);
@@ -172,11 +208,14 @@ export function Filters({
     setFilterValue(newInputValue);
     storeFilteredRegisters(newFilteredRegs);
   }
-  
+
+  function showOperands(): boolean{
+    return ['price', 'amount', 'date'].includes(filterTypeKey);
+  }
 
   return(
     <div className="filters-container" style={customStyles}>
-      <label htmlFor="input" className="input-container">
+      <label htmlFor="input" className="input-container" ref={filterInputRef}>
         <input 
           className="input" 
           id="input"
@@ -184,12 +223,11 @@ export function Filters({
           placeholder='Digite o filtro ...'
           onChange={filterTable}
           value={filterValue}
-          ref={filterInputRef}
         />
         <FiFilter/>
       </label>
 
-      <label htmlFor="select" className="input-container">
+      <label htmlFor="select" className="input-container" ref={filterTypeInputRef}>
         <input 
           className="input" 
           id="select"
@@ -202,7 +240,6 @@ export function Filters({
         <FiChevronDown/>
         <ul 
           className="input-dropdown" 
-          ref={ulDropdownRef}
           style={{ visibility: isDropDownOpen ? 'visible': 'hidden', 
             top: isDropDownOpen ? '2.1rem' : '1rem'
           }}
@@ -222,34 +259,41 @@ export function Filters({
         </ul>
       </label>
       
-      <label htmlFor="select-operand" className="input-container operand">
-        <input 
-          className="input operand" 
-          id="select-operand"
-          type="text" 
-          value={operand === 0 ? '=' : operand === -1 ? '≤' : '≤' }
-          onFocus={()=>{ setIsOperandDropDownOpen(true); }}
-        />
-        <FiChevronDown/>
-        <ul 
-          className="input-dropdown operand" 
-          ref={ulOperandDropdownRef}
-          style={{ visibility: isOperandDropDownOpen ? 'visible': 'hidden', 
-            top: isOperandDropDownOpen ? '2.1rem' : '1rem'
-          }}
+      <div className={`label-overflow-div ${ overflow }`} >
+        <label 
+          htmlFor="select-operand" 
+          className={`input-container operand ${ showOperands() && 'visible' }`}
+          ref={operandInputRef}
         >
-          { operands.map((op)=>{
-            return(
-              <li 
-                key={op.value} 
-                onClick={handleSelectOperand}
-              >
-                {op.icon}
-              </li>
-            )
-          }) }
-        </ul>
-      </label>
+          <input 
+            className="input operand"
+            id="select-operand"
+            type="text"
+            readOnly 
+            value={operand === 0 ? '=' : operand === -1 ? '<' : '>' }
+            onFocus={()=>{ setIsOperandDropDownOpen(true); }}
+          />
+          <FiChevronDown/>
+          <ul 
+            className="input-dropdown operand"
+            style={{ visibility: isOperandDropDownOpen ? 'visible': 'hidden', 
+              top: isOperandDropDownOpen ? '2.1rem' : '1rem'
+            }}
+          >
+            { operands.map((op)=>{
+              return(
+                <li 
+                  key={op.value} 
+                  value={op.value}
+                  onClick={handleSelectOperand}
+                >
+                  { op.icon }
+                </li>
+              )
+            }) }
+          </ul>
+        </label>
+      </div>
 
       <button 
         className="button"

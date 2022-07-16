@@ -1,11 +1,10 @@
 import { useState } from "react"
-import { useAuth } from "../../contexts/authContext"
 
 import { Header } from '../../components/Header'
 import { Resume } from "../../components/Resume"
 import { Filters } from "../../components/Filters"
 import { Table } from "../../components/Table"
-import { NewRegisterModal } from '../../components/RegisterModal'
+import { RegisterFormModal } from '../../components/RegisterModal'
 
 import './styles.scss'
 
@@ -16,7 +15,7 @@ export function Dashboard(){
 
   return(
     <div className="container">
-      <NewRegisterModal 
+      <RegisterFormModal 
         open={isRegisterModalOpen} 
         onClose={setIsRegisterModalOpen}
         method={formMethod}

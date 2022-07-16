@@ -1,16 +1,18 @@
-import { Dispatch, MutableRefObject, useEffect, useRef, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { FiTool, FiXSquare } from 'react-icons/fi';
+
+import { formatCurrency, formatNumber } from '../../helpers/numbersFormatters';
 
 import { Pagination } from './Pagination'
 import { EmptyRows } from './EmptyRows';
 
 import { useRegisters } from '../../contexts/registersContext';
+import { useToast } from '../../contexts/toastContext';
 import { getDateConverted } from '../../helpers/dateConversion';
 
 import { Register } from '../../interfaces/Register';
 
 import './styles.scss'
-import { formatCurrency, formatNumber } from '../../helpers/numbersFormatters';
 
 
 interface TableProps{
@@ -34,6 +36,8 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
 
   const navigationInputRef = useRef() as MutableRefObject<HTMLInputElement>;
   
+  const { addToast } = useToast();
+
   const { 
     storeRegisterToEdit, 
     storeAllRegisters, 
@@ -44,7 +48,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
   useEffect(()=>{
     storeAllRegisters(registers);
     storeFilteredRegisters(registers);
-  },[])
+  },[]);
 
   useEffect(()=>{
     let newRowsNum = -1;
@@ -106,6 +110,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
       name: 'MGLU3',
       amount: 10,
       price: 3,
+      total: 30,
       date: '2021-12-12T03:06:28.000Z'
     },
     {
@@ -114,6 +119,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
       name: 'CASH3',
       amount: 12,
       price: 12000,
+      total: 144000,
       date: '2022-12-12T03:06:28.000Z'
     },
   ]
@@ -143,7 +149,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
                 <td>{register.name}</td>
                 <td>{formatNumber(String(register.amount))}</td>
                 <td>{formatCurrency(String(register.price))}</td>
-                <td>{formatCurrency(String(register.price * register.amount))}</td>
+                <td>{formatCurrency(String(register.total))}</td>
                 <td>{getDateConverted(register.date, true)}</td>
                 <td className="buttons-container empty-row">
                   <FiTool onClick={()=>{handleRegisterEdit(register)}}/>
@@ -155,7 +161,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
           <EmptyRows
             page={currentPage}
             rowsPerPage={emptyRows_RowsPerPage}
-            totalRegsCount={registers.length}
+            totalRegsCount={filteredRegisters.length}
             rowHeightObject={getTrHeight()}
           />
         </tbody>

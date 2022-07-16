@@ -1,0 +1,45 @@
+.toast-container{
+  position: absolute;
+  top: 2.4rem;
+  right: 0;
+  overflow: hidden;
+  width: 16rem;
+  z-index: 1;
+  max-height: 90vh;
+}
+
+.toast-container div + div{
+  margin-top: 0.5rem;
+} 
+
+.toast{
+  position: relative;
+  width: 14rem;
+  height: auto;
+  border-radius: 0.5rem;
+
+  display: flex;
+  padding: 0.5rem 0.5rem 0.2rem 0.5rem;
+
+  color: #4e4e4e;
+}
+
+.toast > div{
+  margin: 0 auto 0 0.6rem;
+  line-height: 1rem;
+}
+.toast strong{
+  color: #111111;
+}
+.toast p{
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  color: #111111;
+}
+.toast > span{
+  padding-top: 0.1rem;
+  color: #111111;
+}
+.toast div + span:hover{
+  cursor: pointer;
+}
