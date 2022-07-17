@@ -13,7 +13,7 @@ export function isoDateFromInput(date: string): string{
   return new Date(y,m-1,d).toISOString();
 }
 
-export function compareDates(date1: string, date2: string){
+export function compareDates(date1: string, date2: string): number{
   const a = new Date(date1);
   const b = new Date(date2);
 

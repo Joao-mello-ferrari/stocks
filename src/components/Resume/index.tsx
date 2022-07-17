@@ -19,6 +19,7 @@ export function Resume({ isResumeCLosed, onClose }: ResumeProps){
           `resume-itens-container
           ${ isResumeCLosed ? 'resume-itens-container-tighten' : ''}
         `}>
+          
         <div className={
           `card buy 
           ${ isResumeCLosed ? 'card-translate-y' : ''}`

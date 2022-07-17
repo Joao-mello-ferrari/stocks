@@ -2,9 +2,12 @@
 
 .login{
   width: 100vw;
+  max-width: 1920px;
   height: 100vh;
-
+  overflow: hidden;
   display: flex;
+  
+  margin: 0 auto;
   
   
   .mainTextContainer{
@@ -35,11 +38,11 @@
         button{
           width: 80%;
           height: 4rem;
-          font-size: 1.4rem!important;
+          font-size: 1rem!important;
           border-radius: 0.4rem!important;
 
           svg{ 
-            padding-top: 0.5rem;
+            padding-top: 0.1rem;
             margin-left: 1.4rem; 
             transform: scale(1.75);
           }
@@ -56,6 +59,46 @@
     img{
       margin-left: -3rem;
       width: 35vw;
+      height: auto;
+    }
+  }
+}
+
+@media(max-width: 768px){
+  .login{
+    flex-direction: column-reverse;
+  }
+
+  .mainTextContainer{
+    padding: 4rem 2rem 0 !important;
+    flex-direction: column;
+    justify-content: start!important;
+    width: calc(100% - 4rem)!important;
+    height: 100%!important;
+
+    .mainText{
+      .title{
+        display: block;
+        font-size: 2.4rem!important;
+        line-height: 2.6rem!important;
+      }
+
+      .description{
+        font-size: 1.2rem!important;
+      }
+
+      .googleButton button{
+        width: 100%!important;
+      }
+    }
+  }
+
+  .mainImageContainer{
+    width: 100vw!important;
+    justify-content: center!important;
+    img{
+      margin: 1rem 0 -3rem!important;
+      width: 45vw!important;
       height: auto;
     }
   }

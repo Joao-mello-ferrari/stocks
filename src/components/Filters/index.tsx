@@ -91,16 +91,14 @@ export function Filters({
       const filterTypeLabel = filterTypeInputRef.current;
       const operandLabel = operandInputRef.current;
       
-      setTimeout(()=>{
-        setIsDropDownOpen((state)=>{
-          if(!filterTypeLabel?.contains(e.target as Node) && state) return false
-          return state;
-        });
-        setIsOperandDropDownOpen((state)=>{
-          if(!operandLabel?.contains(e.target as Node) && state) return false
-          return state
-        });
-      },100);
+      setIsDropDownOpen((state)=>{
+        if(!filterTypeLabel?.contains(e.target as Node) && state) return false
+        return state;
+      });
+      setIsOperandDropDownOpen((state)=>{
+        if(!operandLabel?.contains(e.target as Node) && state) return false
+        return state
+      });
     })
   },[]);
 
@@ -215,7 +213,7 @@ export function Filters({
 
   return(
     <div className="filters-container" style={customStyles}>
-      <label htmlFor="input" className="input-container" ref={filterInputRef}>
+      <label htmlFor="input" className="label" ref={filterInputRef}>
         <input 
           className="input" 
           id="input"
@@ -227,7 +225,7 @@ export function Filters({
         <FiFilter/>
       </label>
 
-      <label htmlFor="select" className="input-container" ref={filterTypeInputRef}>
+      <label htmlFor="select" className="label" ref={filterTypeInputRef}>
         <input 
           className="input" 
           id="select"
@@ -262,7 +260,7 @@ export function Filters({
       <div className={`label-overflow-div ${ overflow }`} >
         <label 
           htmlFor="select-operand" 
-          className={`input-container operand ${ showOperands() && 'visible' }`}
+          className={`label operand ${ showOperands() && 'visible' }`}
           ref={operandInputRef}
         >
           <input 

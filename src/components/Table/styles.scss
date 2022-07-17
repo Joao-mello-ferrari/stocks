@@ -11,6 +11,7 @@
   
   background: $bg-light;
   border-radius: 1rem;
+  position: relative;
 }
 
 .table{
@@ -56,10 +57,26 @@
     border-bottom: 2px solid $text;
     text-align: left;
     padding: 0.2rem 0.4rem;
+    position: relative;
+    z-index: 1;
+
+    svg{
+      position: absolute;
+      font-size: 1.4rem;
+      margin-left: 0.4rem;
+      bottom: 0.2rem;
+      transition: transform 0.2s;
+      &:hover{ cursor: pointer; }
+      &.rotate{ 
+        transform-origin: center;
+        transform: rotate(-180deg);
+      }
+    }
   }
 
   tbody tr td{
     border-bottom: 0.6px solid $text-light;
+    font-size: 1.1rem;
     &.empty-row{ border: 0; }
   }
 
@@ -139,4 +156,24 @@
       }
     }
   }
+}
+
+.default-contentar-container{
+  position: absolute;
+  height: 6rem;
+  top: calc(50% - 3rem);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  h1{
+    font-size: 2rem;
+    font-weight: 400;
+  }
+
+  svg{
+    font-size: 3rem;
+    margin-left: 1rem;
+  }
+
 }

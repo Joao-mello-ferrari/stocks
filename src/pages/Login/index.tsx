@@ -2,7 +2,7 @@ import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline, GoogleLog
 
 import { useAuth } from '../../contexts/authContext'
 
-import styles from './Login.module.scss'
+import './styles.scss'
 
 export function Login(){
   const { login } = useAuth();
@@ -18,17 +18,17 @@ export function Login(){
   }
 
   return(
-    <main className={styles.login}>
-      <section className={styles.mainTextContainer}>
-        <div className={styles.mainText}>
-          <strong className={styles.title}>
+    <main className="login">
+      <section className="mainTextContainer">
+        <div className="mainText">
+          <strong className="title">
             Controle suas finanças do jeito certo!<br/>
           </strong>
-          <span className={styles.description}>
+          <span className="description">
             Acesse a plataforma utilizando sua conta Google e começe
             a organizar seus investimentos.
           </span>
-          <div className={styles.googleButton}>
+          <div className="googleButton">
             <GoogleLogin
               clientId={import.meta.env.VITE_APP_GAPI_CLIENT_ID}
               buttonText='Faça seu login com Google'
@@ -39,9 +39,9 @@ export function Login(){
             />
           </div>
         
-      </div>
+        </div>
       </section>
-      <section className={styles.mainImageContainer}>
+      <section className="mainImageContainer">
         <img src="/src/assets/back.png" alt="Metaphoric people talking about stocks" />
       </section>
     </main>
