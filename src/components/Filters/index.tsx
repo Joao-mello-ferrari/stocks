@@ -141,11 +141,17 @@ export function Filters({
     },100);
   }
   
-  function filterTable(e: React.ChangeEvent<HTMLInputElement> | null, oper=operand){
+  function filterTable(e: React.ChangeEvent<HTMLInputElement> | null, oper=operand): any{
     let searchVal = null;
 
     if(e === null) searchVal = filterValue;
-    else searchVal = e.target.value; 
+    else{
+      if(e.target.value === '' || e.target.value === 'R$ 0,0'){
+        setFilterValue('');
+        storeFilteredRegisters(allRegisters);
+        return
+      } else searchVal = e.target.value
+    }; 
 
     if(filterTypeKey === ''){
       if(isWarningToastEnabled){
@@ -202,7 +208,8 @@ export function Filters({
           const regVal = utf8ToAscii(reg[filterTypeKey]).toLocaleLowerCase();
           return regVal.includes(basedSearchVal);
       }
-    })
+    });
+
     setFilterValue(newInputValue);
     storeFilteredRegisters(newFilteredRegs);
   }

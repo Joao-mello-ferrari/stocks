@@ -1,5 +1,6 @@
 import { ChangeEvent, Dispatch, FormEvent, MutableRefObject, SetStateAction, useRef, useState } from "react";
 import { Input } from "./Input";
+import { Switch } from "../Switch";
 
 import { useAuth } from "../../../contexts/authContext";
 import { useToast } from "../../../contexts/toastContext";
@@ -7,6 +8,8 @@ import { useRegisters } from "../../../contexts/registersContext";
 import { calculateTotal, formatCurrency, formatNumber } from "../../../helpers/numbersFormatters";
 import { onSubmitInputProps } from "../../../interfaces/Submit";
 import { getDateConverted, isoDateFromInput } from "../../../helpers/dateConversion";
+
+import { FiXCircle } from 'react-icons/fi'
 
 import '../styles.scss'
 
@@ -39,6 +42,8 @@ export function Form({ closeModalByForm }: FormProps){
     let hasEditedAtLeastOneField = false;
 
     elements.map(i=>{
+
+      console.log(i.name, i.value)
       if(i.value !== getDefaultValues(i.name)){
         hasEditedAtLeastOneField = true;
       } 
@@ -90,7 +95,6 @@ export function Form({ closeModalByForm }: FormProps){
   function getPrice(){
     const mainValue = priceInput;
     const defaultValue = formatCurrency(String(r?.price));
-    console.log(mainValue)
     return mainValue || defaultValue;
   }
 
@@ -153,27 +157,34 @@ export function Form({ closeModalByForm }: FormProps){
       </fieldset>
 
       <fieldset>
-        <button 
-          type="submit" 
-          className="submit"
-        >
-          Cadastrar
-        </button>
-        <button 
-          type="reset" 
-          className="reset"
-          onClick={clearInputs}
-        >
-          Limpar
-        </button>
-        <button 
-          type="button" 
-          className="back"
-          onClick={()=>{ closeModalByForm(false); }}
-        >
-          Voltar
-        </button>
+        <Switch
+          name="action_type"
+          label="Tipo: "
+          values={['Compra', 'Venda']}
+          keyValues={['buy', 'sell']}
+          defaultValue={Number(r?.action_type === 'sell')}
+        />
+        <div>
+          <button 
+            type="submit" 
+            className="submit"
+          >
+            Salvar
+          </button>
+          <button 
+            type="reset" 
+            className="reset"
+            onClick={clearInputs}
+          >
+            Resetar
+          </button>
+        </div>
       </fieldset>
+
+      <FiXCircle
+        className="close-icon"
+        onClick={()=>{ closeModalByForm(false); }}
+      />
     </form>
   )
 }

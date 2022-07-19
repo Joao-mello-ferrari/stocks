@@ -7,6 +7,8 @@ import { useToast } from "../../../contexts/toastContext";
 import { onSubmitInputProps } from "../../../interfaces/Submit";
 
 import '../styles.scss'
+import { FiXCircle } from "react-icons/fi";
+import { Switch } from "../Switch";
 
 interface FormProps{
   closeModalByForm: Dispatch<SetStateAction<boolean>>;
@@ -113,27 +115,33 @@ export function Form({ closeModalByForm }: FormProps){
       </fieldset>
 
       <fieldset>
-        <button 
-          type="submit" 
-          className="submit"
-        >
-          Cadastrar
-        </button>
-        <button 
-          type="reset" 
-          className="reset"
-          onClick={clearInputs}
-        >
-          Limpar
-        </button>
-        <button 
-          type="button" 
-          className="back"
-          onClick={()=>{ closeModalByForm(false); }}
-        >
-          Voltar
-        </button>
+        <Switch
+          name="action_type"
+          label="Tipo: "
+          values={['Compra', 'Venda']}
+          keyValues={['buy', 'sell']}
+        />
+        <div>
+          <button 
+            type="submit" 
+            className="submit"
+          >
+            Salvar
+          </button>
+          <button 
+            type="reset" 
+            className="reset"
+            onClick={clearInputs}
+          >
+            Resetar
+          </button>
+        </div>
       </fieldset>
+
+      <FiXCircle
+        className="close-icon"
+        onClick={()=>{ closeModalByForm(false); }}
+      />
     </form>
   )
 }

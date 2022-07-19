@@ -3,13 +3,15 @@ interface EmptyRowsProps{
   totalRegsCount: number;
   rowsPerPage: number;
   rowHeightObject: { height: string; }
+  span: number;
 }
 
 export function EmptyRows({ 
   page, 
   totalRegsCount, 
   rowsPerPage,
-  rowHeightObject 
+  rowHeightObject,
+  span 
 }:EmptyRowsProps){
 
   const lastPage = getLastPage();
@@ -23,14 +25,14 @@ export function EmptyRows({
   }
 
 
-  if(page === lastPage-1 || totalRegsCount%page === 0 || page === 0){
+  if(page === lastPage && totalRegsCount%rowsPerPage !== 0){
     return(
       <>
         { baseVector.map((num: number)=>{
           return(
             <tr key={num} style={rowHeightObject}>
               <td 
-                colSpan={6} 
+                colSpan={span} 
                 className={`${num+1 === emptyRowsNum ? "" : "empty-row"}`}/>
             </tr>
           )

@@ -26,13 +26,28 @@
 .modal-content-container{
   flex: 1;
   display: flex;
+  flex-direction: column;
   padding: 1rem 2rem;
   height: calc(80vh - 2rem);
-  flex-direction: column;
 
   h2{
     text-align: center;
     font-size: 2rem;
   }
 }
+
+@media(min-width: 1480px){
+  .modal{
+    top: 12vh;
+    left: 12vw;
+    right: 12vw;
+    bottom: 12vh;
+  }
+
+  .modal-content-container{
+    height: calc(76vh - 7.2rem);
+    padding: 3.6rem 2rem
+  }
+}
+
 

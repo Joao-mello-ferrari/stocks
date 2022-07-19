@@ -41,14 +41,9 @@ export function RegisterFormModal({ open, onClose, method }:ModalProps){
         isOpen={open}
         className="modal"
         overlayClassName="overlay"
-        // onAfterOpen={afterOpenModal}
         onRequestClose={()=>{onClose(false);}}
-        // style={customStyles}
         contentLabel="Example Modal"
       >
-        {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2>
-        <button onClick={closeModal}>close</button> */}
-        {/* <div onClick={()=>{onClose(false);}}>I am a modal</div> */}
         <main className="modal-content-container">
           <h2>Edição de ativo</h2>
           <EditForm closeModalByForm={onClose}/>

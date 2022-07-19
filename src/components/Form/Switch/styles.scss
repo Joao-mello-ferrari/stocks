@@ -1,0 +1,58 @@
+@import '../../../styles/Variables.scss';
+
+.edit-range-label{
+  position: relative;
+  height: 3rem;
+  width: 6rem;
+  
+  padding: 0.6rem 1.6rem;
+  border: 2px solid $header;
+  border-radius: 0.4rem;
+  display: flex;
+  align-items: center;
+
+  &:focus-within{
+    border-color: $theme;
+  }
+
+  input{
+    background: $bg;
+    height: 1.4rem;
+    width: 100%;
+    border: 0;
+    outline: none;
+    border-radius: 1rem;
+    &:hover{ cursor: pointer; }
+    color: transparent;
+  }
+
+  .dot{
+    position: absolute;
+    top: calc(50% - 1rem);
+    left: 1rem;
+
+    background: $theme;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+
+    transition: left 0.4s;
+
+    &:hover{ cursor: pointer; }
+  }
+
+  .label{
+    position: absolute;
+    top: -0.7rem;
+    left: 0.4rem;
+    font-size: 1rem;
+    background: $bg-extra-light;
+    color: $text-light;
+    padding: 0 0.2rem;
+
+  }
+
+  .value{
+    color: $text;
+  }
+}

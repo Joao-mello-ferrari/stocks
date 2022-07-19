@@ -32,7 +32,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
   const [emptyRows_RowsPerPage, setEmptyRows_RowsPerPage] = useState(rowsPerPage);
 
   const [currentPage, setCurrentPage] = useState(0);
-  const totalRegisters = 2;
+  const [totalRegisters, setTotalRegisters] = useState(11);
 
   const [ascendentTotal, setAscendentTotal] = useState(true);
   const [ascendentDate, setAscendentDate] = useState(true);
@@ -54,6 +54,10 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
   },[]);
 
   useEffect(()=>{
+    setTotalRegisters(filteredRegisters.length);
+  },[filteredRegisters]);
+
+  useEffect(()=>{
     let newRowsNum = -1;
     
     if(window.innerWidth > 1480 && moreRows) newRowsNum = 9;
@@ -61,6 +65,12 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
     else if(moreRows) newRowsNum = 6;
     else newRowsNum = 4;
     setRowsPerPage(newRowsNum);
+
+    if(newRowsNum > rowsPerPage){
+      const baseCurrentPage = Math.floor(filteredRegisters.length/newRowsNum);
+      const newCurrentPage = Math.max(0,baseCurrentPage-1)
+      setCurrentPage(newCurrentPage);
+    } 
 
     if(moreRows){
       const delayRowsPerpageChangeForEmptyRows = setTimeout(()=>{
@@ -118,7 +128,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
     storeFilteredRegisters(sortedRegisters);
   }
   
-  const registers = [
+  const registers:Register[] = [
     {
       id: '1',
       asset_class: 'Ações',
@@ -126,7 +136,8 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
       amount: 10,
       price: 3,
       total: 30,
-      date: '2021-12-12T03:06:28.000Z'
+      date: '2021-12-12T03:06:28.000Z',
+      action_type: 'buy'
     },
     {
       id: '2',
@@ -135,7 +146,48 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
       amount: 12,
       price: 12000,
       total: 144000,
-      date: '2022-12-12T03:06:28.000Z'
+      date: '2022-12-12T03:06:28.000Z',
+      action_type: 'buy'
+    },
+    {
+      id: '3',
+      asset_class: 'Ações',
+      name: 'CASH3',
+      amount: 121,
+      price: 12000,
+      total: 144000,
+      date: '2022-12-12T03:06:28.000Z',
+      action_type: 'sell'
+    },
+    {
+      id: '4',
+      asset_class: 'Ações',
+      name: 'CASH3',
+      amount: 12,
+      price: 12000,
+      total: 144000,
+      date: '2022-12-12T03:06:28.000Z',
+      action_type: 'sell'
+    },
+    {
+      id: '5',
+      asset_class: 'Ações',
+      name: 'CASH3',
+      amount: 1122,
+      price: 12000,
+      total: 144000,
+      date: '2022-12-12T03:06:28.000Z',
+      action_type: 'buy'
+    },
+    {
+      id: '6',
+      asset_class: 'Ações',
+      name: 'CASH3',
+      amount: 12,
+      price: 12000,
+      total: 144000,
+      date: '2022-12-12T03:06:28.000Z',
+      action_type: 'buy'
     },
   ]
 
@@ -152,6 +204,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
             <tr>
               <th>Classe</th>
               <th>Ativo</th>
+              <th>Ação</th>
               <th>Quantidade</th>
               <th>Preço unitário</th>
               <th>
@@ -178,7 +231,8 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
             </tr>
           </thead>
           <tbody>
-            { filteredRegisters.slice(currentPage, currentPage + rowsPerPage)
+            { filteredRegisters
+              .slice(currentPage*rowsPerPage, currentPage*rowsPerPage + rowsPerPage)
               .map((register)=>(
                 <tr 
                   key={register.id} 
@@ -187,6 +241,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
                 >
                   <td>{register.asset_class}</td>
                   <td>{register.name}</td>
+                  <td>{register.action_type === 'buy' ? 'C' : 'V'}</td>
                   <td>{formatNumber(String(register.amount))}</td>
                   <td>{formatCurrency(String(register.price))}</td>
                   <td>{formatCurrency(String(register.total))}</td>
@@ -203,11 +258,12 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
               rowsPerPage={emptyRows_RowsPerPage}
               totalRegsCount={filteredRegisters.length}
               rowHeightObject={getTrHeight()}
+              span={7}
             />
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={6}>
+              <td colSpan={7}>
                 <div className="table-footer-container">
                   <span className="table-pages">
                   { (currentPage * rowsPerPage) + 1}
