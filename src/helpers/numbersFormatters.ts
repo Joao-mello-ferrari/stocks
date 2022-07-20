@@ -66,6 +66,7 @@ export function getRawCurVal(value: string | number){
 
   val = val.replaceAll(',','').replaceAll('.','');
   val = Number(val)/100;
+  console.log(val)
   return String(val);
 }
 

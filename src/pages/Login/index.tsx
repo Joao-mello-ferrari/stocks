@@ -1,15 +1,44 @@
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline, GoogleLogout } from 'react-google-login'
 
+import { login as loginService } from '../../api/login'
 import { useAuth } from '../../contexts/authContext'
+import { useToast } from '../../contexts/toastContext'
+import { AppError } from '../../errors/AppError'
 
 import './styles.scss'
 
 export function Login(){
   const { login } = useAuth();
+  const { addToast } = useToast();
 
-  function onSuccess(r:GoogleLoginResponse | GoogleLoginResponseOffline){
+
+  async function onSuccess(r:GoogleLoginResponse | GoogleLoginResponseOffline){
+    
     if('profileObj' in r) {
-      login(r.profileObj)
+      try{
+        const user = r.profileObj
+        const userRef = await loginService(user);
+
+        addToast({ 
+          type: 'success', 
+          title: 'Login', 
+          message: 'Realizado com sucesso.' 
+        });
+
+        login(user);
+      }catch(err){
+        if(err instanceof AppError){
+          const { title, message } = err;
+          addToast({ type: 'error', title, message });
+        }
+        else{
+          addToast({ 
+            type: 'error', 
+            title: 'Login', 
+            message: 'Erro ao realizar operação.' 
+          });
+        }
+      }
     }
   }
 

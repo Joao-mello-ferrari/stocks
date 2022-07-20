@@ -1,11 +1,11 @@
 export function getDateConverted(date: string, toPresent=false){
   const thisDate = new Date(date);
   const y = thisDate.getFullYear();
-  const m = thisDate.getMonth();
-  const d = thisDate.getDate();
+  const m = String(thisDate.getMonth()+1).padStart(2,'0');
+  const d = String(thisDate.getDate()).padStart(2,'0');
 
-  if(toPresent) return `${d} / ${m+1} / ${y}`;
-  return `${y}-${m+1}-${d}`;
+  if(toPresent) return `${d} / ${m} / ${y}`;
+  return `${y}-${m}-${d}`;
 }
 
 export function isoDateFromInput(date: string): string{

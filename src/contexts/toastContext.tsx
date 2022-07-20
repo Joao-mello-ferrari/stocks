@@ -21,7 +21,7 @@ export function ToastContextProvider({ children }: ToastContextProviderProps){
 
   const addToast = useCallback((newToast: Omit<Toast, 'id'>) =>{
     const toast = { ...newToast, id: v4() };
-    setToasts(current => [...current, toast])
+    setToasts(current => [...current, toast]);
   },[])
 
   const removeToast = useCallback((id: string) =>{

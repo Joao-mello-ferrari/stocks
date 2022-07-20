@@ -5,14 +5,14 @@ import { FiCalendar, FiDollarSign, FiEdit3,
 import './styles.scss'
 
 interface InputProps extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>{
-  name: 'name' | 'class' | 'amount' | 'price' | 'total' | 'date';
+  name: 'name' | 'asset_class' | 'amount' | 'price' | 'total' | 'date';
   label: string;
   type?: string;
 }
 
 const icons = {
   name: <FiEdit3/>,
-  class: <FiTag/>,
+  asset_class: <FiTag/>,
   amount: <FiLayers/>,
   price: <FiDollarSign/>,
   total: <FiFileText/>,
@@ -21,11 +21,12 @@ const icons = {
 
 export function Input({ name, label, type="text", ...rest }:InputProps){
   return(
-    <label className="create-label" htmlFor={label}>
+    <label className="create-label">
       <input 
         type={type} 
         placeholder={label}
-        id={label}
+        // id={}
+        // id={label}
         { ...rest }
       />
       <div>{icons[name]}</div>
