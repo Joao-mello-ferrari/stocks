@@ -52,7 +52,7 @@ export function AuthContenxtProvider({ children }: AuthContenxtProviderProps ){
   },[]);
 
   const isLogged = () =>{
-    return Object.keys(user).length !== 0
+    return Object.keys(user).length !== 0;
   }
 
   return(

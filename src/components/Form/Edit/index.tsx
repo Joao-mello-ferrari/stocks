@@ -5,13 +5,17 @@ import { Switch } from "../Switch";
 import { useAuth } from "../../../contexts/authContext";
 import { useToast } from "../../../contexts/toastContext";
 import { useRegisters } from "../../../contexts/registersContext";
-import { calculateTotal, formatCurrency, formatNumber } from "../../../helpers/numbersFormatters";
+import { calculateTotal, formatCurrency, formatNumber, getRawCurVal, getRawNumberVal } from "../../../helpers/numbersFormatters";
 import { onSubmitInputProps } from "../../../interfaces/Submit";
 import { getDateConverted, isoDateFromInput } from "../../../helpers/dateConversion";
 
 import { FiXCircle } from 'react-icons/fi'
 
 import '../styles.scss'
+import { updateRegister } from "../../../api/updateRegister";
+import { Register } from "../../../interfaces/Register";
+import { AppError } from "../../../errors/AppError";
+import { BounceLoader } from "react-spinners";
 
 interface FormProps{
   closeModalByForm: Dispatch<SetStateAction<boolean>>;
@@ -32,24 +36,28 @@ export function Form({ closeModalByForm }: FormProps){
     return String(value)
   }
 
-  function handleEditRegister(e: FormEvent){
+  async function handleEditRegister(e: FormEvent){
     e.preventDefault();
     const originalElements = Array.from([editFormRef.current.elements][0]);
     const elements = originalElements
       .filter(item => item.tagName === 'INPUT') as unknown as onSubmitInputProps[];
 
-    const editFormData = new FormData();
+    const newRegister = {} as Omit<Register, 'ref'>;
     let hasEditedAtLeastOneField = false;
 
     elements.map(i=>{
-
-      console.log(i.name, i.value)
-      if(i.value !== getDefaultValues(i.name)){
+      if(i.value !== getDefaultValues(i.name))
         hasEditedAtLeastOneField = true;
-      } 
-  
-      if(i.name === 'date') return isoDateFromInput(i.value);
-      return editFormData.append(i.name, i.value);
+      
+      switch(i.id){
+        case 'price': return newRegister.price =  +getRawCurVal(i.value);
+        case 'amount': return newRegister.amount = +getRawNumberVal(i.value);
+        case 'total': return newRegister.total = +getRawCurVal(i.value);
+        case 'date':
+          const [y,m,d] = (i.value.split('-')).map(i=>Number(i));
+          return newRegister.date = new Date(y,m-1,d).toISOString();
+        default: return newRegister[i.id] = i.value;
+      }
     });
 
     if(!hasEditedAtLeastOneField){
@@ -58,13 +66,41 @@ export function Form({ closeModalByForm }: FormProps){
         title: 'Edição', 
         message: 'É preciso alterar ao menos um campo!' 
       });
-      return
+      return;
     }
-
-    // post
-    // addToast
     
-    function getDefaultValues(key: 'asset_class' | 'name' | 'amount' | 'price' | 'total' | 'date'): string{
+    try{
+      const updatedRegister = await updateRegister(r.ref, newRegister);
+      
+      // update cache
+
+      addToast({ 
+        type: 'success', 
+        title: 'Edição', 
+        message: `Ativo ${newRegister.name} atualizado com sucesso.` 
+      });
+      closeModalByForm(false);
+      
+    }catch(err){
+      if(err instanceof AppError){
+        const { title, message } = err;
+        addToast({ type: 'error', title, message });
+      }
+      else{
+        addToast({ 
+          type: 'error', 
+          title: 'Edição', 
+          message: 'Erro ao realizar operação.' 
+        });
+      }
+    }finally{ 
+      // setIsSubmiting(false); 
+      // setHasSubmited(true);
+    }
+    
+    
+    
+    function getDefaultValues(key: onSubmitInputProps['id']): string{
       switch(key){
         case 'amount': return formatNumber(String(r?.amount));
         case 'price': return formatCurrency(String(r?.price));
@@ -116,11 +152,13 @@ export function Form({ closeModalByForm }: FormProps){
       <fieldset>
         <Input
           name='asset_class'
+          id="asset_class"
           label='Classe do ativo'
           defaultValue={value(r?.asset_class)}
         />
         <Input
           name='name'
+          id='name'
           label='Nome do ativo'
           defaultValue={value(r?.name)}
         />
@@ -129,12 +167,14 @@ export function Form({ closeModalByForm }: FormProps){
       <fieldset>
         <Input
           name='amount'
+          id='amount'
           label='Quantidade'
           value={getAmount()}
           onChange={handleAmountChange}
         />
         <Input
           name='price'
+          id='price'
           label='Preço unitário'
           value={getPrice()}
           onChange={handlePriceChange}
@@ -144,12 +184,14 @@ export function Form({ closeModalByForm }: FormProps){
       <fieldset>
         <Input
           name='total'
+          id='total'
           label='Total'
           readOnly
           value={getTotal()}
         />
         <Input
           name='date'
+          id='date'
           label='Data'
           type="date"
           defaultValue={getDateConverted(r?.date)}
@@ -159,17 +201,25 @@ export function Form({ closeModalByForm }: FormProps){
       <fieldset>
         <Switch
           name="action_type"
+          id="action_type"
           label="Tipo: "
           values={['Compra', 'Venda']}
           keyValues={['buy', 'sell']}
           defaultValue={Number(r?.action_type === 'sell')}
         />
-        <div>
+        <div className="buttons-container">
           <button 
             type="submit" 
             className="submit"
+            disabled={true}
           >
-            Salvar
+            { true
+              ? <BounceLoader
+                  color="#eef1ff"
+                  size={20}
+                />
+              : 'Salvar'
+            }
           </button>
           <button 
             type="reset" 

@@ -18,6 +18,7 @@ import { Register } from '../../interfaces/Register';
 
 import './styles.scss'
 import { AppError } from '../../errors/AppError';
+import { deleteRegister } from '../../api/deleteRegister';
 
 
 interface TableProps{
@@ -49,8 +50,6 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
   const { user } = useAuth();
   const { addToast } = useToast();
 
-  
-
   const { 
     storeRegisterToEdit, 
     storeAllRegisters, 
@@ -61,7 +60,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
   useEffect(()=>{
     async function load(){
       try{
-        const { data } = await loadRegisters(user.email);
+        const data = await loadRegisters(user.email);
 
         storeAllRegisters(data);
         storeFilteredRegisters(data);
@@ -153,6 +152,40 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
     openRegisterEditForm(true);
     changeFormMethod('PUT'); 
   }
+  
+  async function handleRegisterDelete(ref: Register["ref"]){
+    const shouldReallyDelete = confirm("Deseja realmente excluir?");
+    if(!shouldReallyDelete) return;
+
+    try{
+      const deletedRegister = await deleteRegister(ref);
+
+      // storeAllRegisters(data);
+      // storeFilteredRegisters(data);
+
+      addToast({ 
+        type: 'success', 
+        title: 'Deleção', 
+        message: `Ativo ${deletedRegister.name} deletado com sucesso.` 
+      });
+      
+    }catch(err){
+      if(err instanceof AppError){
+        const { title, message } = err;
+        addToast({ type: 'error', title, message });
+      }
+      else{
+        addToast({ 
+          type: 'error', 
+          title: 'Deleção', 
+          message: 'Erro ao realizar operação.' 
+        });
+      }
+    }finally{ 
+      setIsSubmiting(false); 
+      setHasSubmited(true);
+    }
+  }
 
   function getTrHeight(){
     let rowHeight = null;
@@ -174,7 +207,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
     })
     
     storeFilteredRegisters(sortedRegisters);
-  }console.log(filteredRegisters)
+  }
 
   return(
     <div className="table-container">
@@ -220,7 +253,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
               .slice(currentPage*rowsPerPage, currentPage*rowsPerPage + rowsPerPage)
               .map((register)=>(
                 <tr 
-                  key={register.id} 
+                  key={register.ref.value.id} 
                   className="table-row"
                   style={getTrHeight()}
                 >
@@ -233,7 +266,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
                   <td>{getDateConverted(register.date, true)}</td>
                   <td className="buttons-container empty-row">
                     <FiTool onClick={()=>{handleRegisterEdit(register)}}/>
-                    <FiXSquare/>
+                    <FiXSquare onClick={()=>{handleRegisterDelete(register.ref)}}/>
                   </td>
               </tr>
             ))

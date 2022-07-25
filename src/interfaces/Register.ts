@@ -1,5 +1,7 @@
+import { FaunaRefObject } from './FaunaRefObject'
+
 export interface Register{
-  id?: string;
+  ref: FaunaRefObject;
   asset_class: string;
   name: string;
   amount: number;

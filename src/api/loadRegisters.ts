@@ -4,10 +4,18 @@ import { AppError } from '../errors/AppError';
 import { safeVerifyError } from '../errors/FaunaErrorHandler';
 
 import { Register } from '../interfaces/Register'
+import { FaunaRefObject } from '../interfaces/FaunaRefObject'
 
-export async function loadRegisters(userEmail: string): Promise<{ data:Register[]}>{
+interface FaunaRegisterResponse{
+  data:[
+    FaunaRefObject,
+    Omit<Register,'ref'>
+  ][]
+}
+
+export async function loadRegisters(userEmail: string): Promise<Register[]>{
   try{
-    const registers = await faunaClient.query<{ data:Register[]}>(
+    const registers = await faunaClient.query<FaunaRegisterResponse>(
       q.Map(
         q.Paginate(
           q.Match(
@@ -23,11 +31,23 @@ export async function loadRegisters(userEmail: string): Promise<{ data:Register[
             )
           )
         ),
-        q.Lambda( (obj) => q.Select(["data"], q.Get(obj)))
+        q.Lambda("obj",[
+          q.Select(["ref"], q.Get(q.Var("obj"))),
+          q.Select(["data"], q.Get(q.Var("obj")))
+        ])
       )
     );
 
-    return registers;
+    const mappedRegs = registers.data
+      .map((subArray: [FaunaRefObject, Omit<Register,'ref'>]) => {
+        return{
+          ref: subArray[0],
+          ...subArray[1]
+        }
+      })
+    
+    return mappedRegs
+    
   }catch(err){
     const errorReason = safeVerifyError(err, [
       'requestResult',
@@ -37,7 +57,7 @@ export async function loadRegisters(userEmail: string): Promise<{ data:Register[
       'code'
     ]);
 
-    if(errorReason !== 'instance not found'){
+    if(errorReason === 'instance not found'){
       throw new AppError('Busca','Registros não encontrados.')
     }
 

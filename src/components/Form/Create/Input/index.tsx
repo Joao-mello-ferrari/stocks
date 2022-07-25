@@ -25,8 +25,6 @@ export function Input({ name, label, type="text", ...rest }:InputProps){
       <input 
         type={type} 
         placeholder={label}
-        // id={}
-        // id={label}
         { ...rest }
       />
       <div>{icons[name]}</div>

@@ -38,35 +38,10 @@ export async function createRegister(userEmail: string, register:Register): Prom
       'code'
     ]);
 
-    if(errorReason !== 'instance not found'){
-      throw new AppError('Busca','Registros não encontrados.')
+    if(errorReason === 'instance not found'){
+      throw new AppError('Criação','Banco de dados não encontrado.')
     }
 
     throw err;
   }
 }
- 
-//  
-
-    
-  // const data = await faunaClient.query(
-  //   q.Select(
-  //     ["data", "name"],
-  //     q.Get(
-  //       q.Match(
-  //         q.Index("findByUserRef"),
-  //         q.Select(["ref"], 
-  //           q.Get(
-  //             q.Match(
-  //               q.Index("findByEmail"), 
-  //               'joao'
-  //             )
-  //           )
-  //         )
-  //       )
-  //     )
-  //   )
-  // )
-
-  // console.log(a)  // const response = await faunaClient.query(
-  //  

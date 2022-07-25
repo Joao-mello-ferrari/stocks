@@ -6,12 +6,15 @@ import { formatCurrency, formatNumber, calculateTotal, getRawCurVal, getRawNumbe
 import { useToast } from "../../../contexts/toastContext";
 import { onSubmitInputProps } from "../../../interfaces/Submit";
 
-import '../styles.scss'
+import { BounceLoader } from "react-spinners";
 import { FiXCircle } from "react-icons/fi";
 import { Switch } from "../Switch";
 import { createRegister } from "../../../api/createRegister";
 import { useAuth } from "../../../contexts/authContext";
 import { Register } from "../../../interfaces/Register";
+import { AppError } from "../../../errors/AppError";
+
+import '../styles.scss';
 
 interface FormProps{
   closeModalByForm: Dispatch<SetStateAction<boolean>>;
@@ -33,7 +36,7 @@ export function Form({ closeModalByForm }: FormProps){
     const elements = originalElements
       .filter(item => item.tagName === 'INPUT') as unknown as onSubmitInputProps[];
     
-    const newRegister = {} as Register;
+    const newRegister = {} as Omit<Register,'ref>'>;
 
     elements.map(i=>{
       switch(i.id){
@@ -47,13 +50,32 @@ export function Form({ closeModalByForm }: FormProps){
       }
     });
 
-    const addedRegister = await createRegister(user.email, newRegister);
+    try{
 
-    addToast({ 
-      type: 'success', 
-      title: 'Lançamento', 
-      message: 'Cadastrado com sucesso!' 
-    });
+      const addedRegister = await createRegister(user.email, newRegister);
+      addToast({ 
+        type: 'success', 
+        title: 'Lançamento', 
+        message: `Ativo ${newRegister.name} cadastrado com sucesso!` 
+      });
+      closeModalByForm(false);
+
+    }catch(err){
+      if(err instanceof AppError){
+        const { title, message } = err;
+        addToast({ type: 'error', title, message });
+      }
+      else{
+        addToast({ 
+          type: 'error', 
+          title: 'Cadastro', 
+          message: 'Erro ao realizar operação.' 
+        });
+      }
+    }finally{ 
+      // setIsSubmiting(false); 
+      // setHasSubmited(true);
+    }
   }
 
   function handlePriceChange(e: ChangeEvent<HTMLInputElement>){
@@ -135,12 +157,19 @@ export function Form({ closeModalByForm }: FormProps){
           values={['Compra', 'Venda']}
           keyValues={['buy', 'sell']}
         />
-        <div>
+        <div className="buttons-container">
           <button 
             type="submit" 
             className="submit"
+            disabled={false}
           >
-            Salvar
+            { true
+              ? <BounceLoader
+                  color="#eef1ff"
+                  size={20}
+                />
+              : 'Salvar'
+            }
           </button>
           <button 
             type="reset" 
