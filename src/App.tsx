@@ -4,9 +4,12 @@ import { useEffect } from 'react'
 import { AuthContenxtProvider } from './contexts/authContext'
 import { RegistersContenxtProvider } from './contexts/registersContext'
 import { ToastContextProvider } from './contexts/toastContext'
+import { QueryClient, QueryClientProvider } from 'react-query'
 import { Routes } from "./Routes"
 
 import './styles/App.module.scss'
+
+const queryClient = new QueryClient();
 
 function App() {
   useEffect(()=>{
@@ -21,13 +24,15 @@ function App() {
   })
 
   return (
-    <AuthContenxtProvider>
-      <RegistersContenxtProvider>
-        <ToastContextProvider>
-          <Routes/>
-        </ToastContextProvider>
-      </RegistersContenxtProvider>
-    </AuthContenxtProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthContenxtProvider>
+        <RegistersContenxtProvider>
+          <ToastContextProvider>
+            <Routes/>
+          </ToastContextProvider>
+        </RegistersContenxtProvider>
+      </AuthContenxtProvider>
+    </QueryClientProvider>
   )
 }
 

@@ -1,6 +1,8 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 
 import { FiFilter, FiChevronDown } from 'react-icons/fi'
+import { useQuery } from 'react-query';
+import { loadRegisters } from '../../api/loadRegisters';
 
 import { useRegisters } from '../../contexts/registersContext';
 import { useToast } from '../../contexts/toastContext';
@@ -9,42 +11,10 @@ import { compareDates, isoDateFromInput } from '../../helpers/dateConversion';
 import { compareNumbers, formatCurrency, formatNumber, getRawCurVal, getRawNumberVal } from '../../helpers/numbersFormatters';
 import { utf8ToAscii } from '../../helpers/textFormatter';
 
+import { FilterTypeOption, CustomClickEvent, CustomClickEventOperand,
+  FiltersProps, Operand } from './FiltersInterface';
+  
 import './styles.scss'
-
-interface FiltersProps{
-  customStyles: {},
-  onNewRegisterButtonClick: (state: boolean) => void;
-  changeFormMethod: (method: 'POST' | 'PUT') => void;
-}
-
-interface FilterTypeOption{
-  value: 'asset_class' | 'name' | 'amount' | 'price' | 'date';
-  text: string;
-}
-
-interface Operand{
-  value: -1 | 0 | 1;
-  icon: '≤' | '≥' | '=' | '<' | '>';
-}
-
-interface CustomClickEvent extends React.MouseEvent<HTMLLIElement, MouseEvent>{
-  target:{
-    addEventListener: () => void;
-    dispatchEvent: () => boolean; 
-    removeEventListener: () => void;
-    id: 'asset_class' | 'name' | 'amount' | 'price' | 'date';
-    textContent: string;
-  }
-}
-
-interface CustomClickEventOperand extends React.MouseEvent<HTMLLIElement, MouseEvent>{
-  target:{
-    addEventListener: () => void;
-    dispatchEvent: () => boolean; 
-    removeEventListener: () => void;
-    value: -1 | 0 | 1;
-  }
-}
 
 const baseFilterTypeOptions: FilterTypeOption[] = [
   { value: 'name', text: 'Nome do ativo' },
@@ -66,6 +36,12 @@ export function Filters({
   changeFormMethod 
 }: FiltersProps){
 
+    const { data: allRegisters } = useQuery(
+    'loadRegisters', 
+    async () => await loadRegisters(), 
+    { staleTime: Infinity }
+  );
+
   const [filterValue, setFilterValue] = useState('');
   const [filterTypeValue, setFilterTypeValue] = useState('')
   const [filterTypeOptions, setFilterTypeOptions] = useState<FilterTypeOption[]>(baseFilterTypeOptions)
@@ -78,7 +54,7 @@ export function Filters({
   const [isWarningToastEnabled, setIsWarningToastEnabled] = useState(true);
   const [overflow, setOverflow] = useState('overflow');
 
-  const { allRegisters, storeFilteredRegisters } = useRegisters();
+  const { storeFilteredRegisters } = useRegisters();
   const { addToast } = useToast();
 
   const filterInputRef = useRef() as MutableRefObject<HTMLLabelElement>;
@@ -142,6 +118,7 @@ export function Filters({
   }
   
   function filterTable(e: React.ChangeEvent<HTMLInputElement> | null, oper=operand): any{
+    if(allRegisters === undefined) return;
     let searchVal = null;
 
     if(e === null) searchVal = filterValue;

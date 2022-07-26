@@ -13,7 +13,10 @@ interface FaunaRegisterResponse{
   ][]
 }
 
-export async function loadRegisters(userEmail: string): Promise<Register[]>{
+// export async function loadRegisters(userEmail: string): Promise<Register[]>{
+export async function loadRegisters(): Promise<Register[]>{
+  
+  const userEmail  = 'joao.vico.mellof@gmail.com';
   try{
     const registers = await faunaClient.query<FaunaRegisterResponse>(
       q.Map(
@@ -45,7 +48,6 @@ export async function loadRegisters(userEmail: string): Promise<Register[]>{
           ...subArray[1]
         }
       })
-    
     return mappedRegs
     
   }catch(err){
