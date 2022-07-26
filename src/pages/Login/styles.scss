@@ -67,14 +67,16 @@
 @media(max-width: 768px){
   .login{
     flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
   }
 
   .mainTextContainer{
-    padding: 4rem 2rem 0 !important;
+    padding: 0rem 2rem 0 !important;
     flex-direction: column;
     justify-content: start!important;
     width: calc(100% - 4rem)!important;
-    height: 100%!important;
+    height: 60vh!important;
 
     .mainText{
       .title{
@@ -95,10 +97,12 @@
 
   .mainImageContainer{
     width: 100vw!important;
+    
+    height: 40vh;
     justify-content: center!important;
     img{
-      margin: 1rem 0 -3rem!important;
-      width: 45vw!important;
+      margin: 1rem 0 -5rem!important;
+      width: 55vw!important;
       height: auto;
     }
   }

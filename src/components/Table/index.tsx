@@ -7,7 +7,7 @@ import { Pagination } from './Pagination'
 import { EmptyRows } from './EmptyRows';
 import { DefaultContent } from './DefaultContent';
 
-import { useQuery } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 
 import { useRegisters } from '../../contexts/registersContext';
 import { useToast } from '../../contexts/toastContext';
@@ -34,8 +34,37 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
     async () => await loadRegisters(), 
     { staleTime: Infinity }
   );
-
   
+  const queryClient = useQueryClient();
+  const { mutate: deleteQuery, isLoading: isDeleting } = useMutation(
+    (ref: Register["ref"])=>handleDeleteRegister(ref),
+    {
+      onSuccess: (reg: Register | undefined) => {
+        if(reg !== undefined){
+          addToast({ 
+            type: 'success', 
+            title: 'Deleção', 
+            message: `Ativo ${reg.name} deletado com sucesso.` 
+          });
+          queryClient.invalidateQueries('loadRegisters')
+        }
+      },
+      onError: (err) => {
+        if(err instanceof AppError){
+          const { title, message } = err;
+          addToast({ type: 'error', title, message });
+        }
+        else{
+          addToast({ 
+            type: 'error', 
+            title: 'Deleção', 
+            message: 'Erro ao realizar operação.' 
+          });
+        }
+      }
+    }
+  );
+
   const [rowsPerPage, setRowsPerPage] = useState(()=>{
     if(window.innerWidth > 1480 && moreRows) return 10;
     if(window.innerHeight > 1480 && !moreRows) return 6;
@@ -72,7 +101,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
       storeFilteredRegisters(data);
     }
     
-    else if(error !== undefined){
+    else if(error !== null){
       if(error instanceof AppError){
         const { title, message } = error;
         addToast({ type: 'error', title, message });
@@ -135,44 +164,17 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
    }
   }
 
-  function handleRegisterEdit(reg: Register){
+  function handleEditRegister(reg: Register){
     storeRegisterToEdit(reg);
     openRegisterEditForm(true);
     changeFormMethod('PUT'); 
   }
   
-  async function handleRegisterDelete(ref: Register["ref"]){
+  async function handleDeleteRegister(ref: Register["ref"]){
     const shouldReallyDelete = confirm("Deseja realmente excluir?");
     if(!shouldReallyDelete) return;
 
-    try{
-      const deletedRegister = await deleteRegister(ref);
-
-      // storeAllRegisters(data);
-      // storeFilteredRegisters(data);
-
-      addToast({ 
-        type: 'success', 
-        title: 'Deleção', 
-        message: `Ativo ${deletedRegister.name} deletado com sucesso.` 
-      });
-      
-    }catch(err){
-      if(err instanceof AppError){
-        const { title, message } = err;
-        addToast({ type: 'error', title, message });
-      }
-      else{
-        addToast({ 
-          type: 'error', 
-          title: 'Deleção', 
-          message: 'Erro ao realizar operação.' 
-        });
-      }
-    }finally{ 
-      // setIsSubmiting(false); 
-      // setHasSubmited(true);
-    }
+    return await deleteRegister(ref);
   }
 
   function getTrHeight(){
@@ -253,8 +255,8 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
                   <td>{formatCurrency(String(register.total))}</td>
                   <td>{getDateConverted(register.date, true)}</td>
                   <td className="buttons-container empty-row">
-                    <FiTool onClick={()=>{handleRegisterEdit(register)}}/>
-                    <FiXSquare onClick={()=>{handleRegisterDelete(register.ref)}}/>
+                    <FiTool onClick={()=>{handleEditRegister(register)}}/>
+                    <FiXSquare onClick={()=>{deleteQuery(register.ref)}}/>
                   </td>
               </tr>
             ))

@@ -14,14 +14,14 @@ export function Dashboard(){
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [formMethod, setFormMethod] = useState<'POST' | 'PUT'>('POST');
   
-  // if(window.innerWidth < 768){
-  //   return(
-  //     <div className="container">
-  //       <Header/>
-  //       <MobileDashBoard/>
-  //     </div>
-  //   )
-  // }
+  if(window.innerWidth < 768){
+    return(
+      <div className="container">
+        <Header/>
+        <MobileDashBoard/>
+      </div>
+    )
+  }
 
   return(
     <div className="container">

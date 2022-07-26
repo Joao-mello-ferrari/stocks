@@ -15,18 +15,52 @@ import { Register } from "../../../interfaces/Register";
 import { AppError } from "../../../errors/AppError";
 
 import '../styles.scss';
+import { useMutation, useQueryClient } from "react-query";
 
 interface FormProps{
   closeModalByForm: Dispatch<SetStateAction<boolean>>;
 }
 
 export function Form({ closeModalByForm }: FormProps){
+  const queryClient = useQueryClient();
+  const { mutate: createQuery, isLoading } = useMutation(
+    (e: FormEvent)=>handleAddRegister(e),
+    {
+      onSuccess: (reg: Register | undefined) => {
+        if(reg !== undefined){
+          addToast({ 
+            type: 'success', 
+            title: 'Lançamento', 
+            message: `Ativo ${reg.name} cadastrado com sucesso!` 
+          });
+          queryClient.invalidateQueries('loadRegisters')
+        }
+        
+        closeModalByForm(false);
+      },
+      onError: (err) => {
+        if(err instanceof AppError){
+          const { title, message } = err;
+          addToast({ type: 'error', title, message });
+        }
+        else{
+          addToast({ 
+            type: 'error', 
+            title: 'Cadastro', 
+            message: 'Erro ao realizar operação.' 
+          });
+        }
+      }
+    }
+  );
+
   const [priceInput, setPriceInput] = useState('');
   const [amountInput, setAmountInput] = useState('');
 
+  const [isWarningToastEnabled, setIsWarningToastEnabled] = useState(true);
+
   const addFormRef = useRef() as MutableRefObject<HTMLFormElement>;
   
-
   const { user } = useAuth(); 
   const { addToast } = useToast(); 
 
@@ -50,32 +84,7 @@ export function Form({ closeModalByForm }: FormProps){
       }
     });
 
-    try{
-
-      const addedRegister = await createRegister(user.email, newRegister);
-      addToast({ 
-        type: 'success', 
-        title: 'Lançamento', 
-        message: `Ativo ${newRegister.name} cadastrado com sucesso!` 
-      });
-      closeModalByForm(false);
-
-    }catch(err){
-      if(err instanceof AppError){
-        const { title, message } = err;
-        addToast({ type: 'error', title, message });
-      }
-      else{
-        addToast({ 
-          type: 'error', 
-          title: 'Cadastro', 
-          message: 'Erro ao realizar operação.' 
-        });
-      }
-    }finally{ 
-      // setIsSubmiting(false); 
-      // setHasSubmited(true);
-    }
+    return await createRegister(user.email, newRegister);
   }
 
   function handlePriceChange(e: ChangeEvent<HTMLInputElement>){
@@ -95,9 +104,19 @@ export function Form({ closeModalByForm }: FormProps){
     setAmountInput('');
   }
 
+  function showTotalInputMessage(){
+    if(!isWarningToastEnabled) return;
+    addToast({
+      type: 'warning',
+      title: 'Preço total',
+      message: 'O valor total é calculado automaticamente, conforme a quantidade e o preço.'
+    })
+    setIsWarningToastEnabled(false);
+    setTimeout(()=>{ setIsWarningToastEnabled(true) },5000);
+  }
 
   return(
-    <form className="form" ref={addFormRef} onSubmit={handleAddRegister}>
+    <form className="form" ref={addFormRef} onSubmit={createQuery}>
       <fieldset>
         <Input
           name='asset_class'
@@ -138,6 +157,7 @@ export function Form({ closeModalByForm }: FormProps){
           id='total'
           label='Total'
           readOnly
+          onKeyDown={showTotalInputMessage}
           value={calculateTotal(priceInput, amountInput)}
         />
         <Input
@@ -161,9 +181,9 @@ export function Form({ closeModalByForm }: FormProps){
           <button 
             type="submit" 
             className="submit"
-            disabled={false}
+            disabled={isLoading}
           >
-            { true
+            { isLoading
               ? <BounceLoader
                   color="#eef1ff"
                   size={20}

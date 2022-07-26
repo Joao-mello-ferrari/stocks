@@ -2,12 +2,11 @@ import { ChangeEvent, Dispatch, FormEvent, MutableRefObject, SetStateAction, use
 import { Input } from "./Input";
 import { Switch } from "../Switch";
 
-import { useAuth } from "../../../contexts/authContext";
 import { useToast } from "../../../contexts/toastContext";
 import { useRegisters } from "../../../contexts/registersContext";
 import { calculateTotal, formatCurrency, formatNumber, getRawCurVal, getRawNumberVal } from "../../../helpers/numbersFormatters";
 import { onSubmitInputProps } from "../../../interfaces/Submit";
-import { getDateConverted, isoDateFromInput } from "../../../helpers/dateConversion";
+import { getDateConverted } from "../../../helpers/dateConversion";
 
 import { FiXCircle } from 'react-icons/fi'
 
@@ -16,25 +15,55 @@ import { updateRegister } from "../../../api/updateRegister";
 import { Register } from "../../../interfaces/Register";
 import { AppError } from "../../../errors/AppError";
 import { BounceLoader } from "react-spinners";
+import { useMutation, useQueryClient } from "react-query";
 
 interface FormProps{
   closeModalByForm: Dispatch<SetStateAction<boolean>>;
 }
 
 export function Form({ closeModalByForm }: FormProps){
+  const queryClient = useQueryClient();
+  const { mutate: editQuery, isLoading } = useMutation(
+    (e: FormEvent)=>handleEditRegister(e),
+    {
+      onSuccess: (reg: Register | undefined) => {
+        if(reg !== undefined){
+          addToast({ 
+            type: 'success', 
+            title: 'Edição', 
+            message: `Ativo ${reg.name} atualizado com sucesso.` 
+          });
+          queryClient.invalidateQueries('loadRegisters')
+          closeModalByForm(false);
+        }
+        
+      },
+      onError: (err) => {
+        if(err instanceof AppError){
+          const { title, message } = err;
+          addToast({ type: 'error', title, message });
+        }
+        else{
+          addToast({ 
+            type: 'error', 
+            title: 'Edição', 
+            message: 'Erro ao realizar operação.' 
+          });
+        }
+      }
+    }
+  );
+
   const { registerToEdit: r } = useRegisters();
   
   const [priceInput, setPriceInput] = useState(formatCurrency(String(r?.price)));
   const [amountInput, setAmountInput] = useState(formatNumber(String(r.amount)));
   
+  const [isWarningToastEnabled, setIsWarningToastEnabled] = useState(true);
+
   const editFormRef = useRef() as MutableRefObject<HTMLFormElement>;
   
   const { addToast } = useToast(); 
-
-  function value(value: string | number){
-    if(!value) return 'Não há';
-    return String(value)
-  }
 
   async function handleEditRegister(e: FormEvent){
     e.preventDefault();
@@ -69,37 +98,8 @@ export function Form({ closeModalByForm }: FormProps){
       return;
     }
     
-    try{
-      const updatedRegister = await updateRegister(r.ref, newRegister);
-      
-      // update cache
+    return await updateRegister(r.ref, newRegister);
 
-      addToast({ 
-        type: 'success', 
-        title: 'Edição', 
-        message: `Ativo ${newRegister.name} atualizado com sucesso.` 
-      });
-      closeModalByForm(false);
-      
-    }catch(err){
-      if(err instanceof AppError){
-        const { title, message } = err;
-        addToast({ type: 'error', title, message });
-      }
-      else{
-        addToast({ 
-          type: 'error', 
-          title: 'Edição', 
-          message: 'Erro ao realizar operação.' 
-        });
-      }
-    }finally{ 
-      // setIsSubmiting(false); 
-      // setHasSubmited(true);
-    }
-    
-    
-    
     function getDefaultValues(key: onSubmitInputProps['id']): string{
       switch(key){
         case 'amount': return formatNumber(String(r?.amount));
@@ -147,8 +147,24 @@ export function Form({ closeModalByForm }: FormProps){
     return mainValue || defaultValue;
   }
 
+  function value(value: string | number){
+    if(!value) return 'Não há';
+    return String(value)
+  }
+
+  function showTotalInputMessage(){
+    if(!isWarningToastEnabled) return;
+    addToast({
+      type: 'warning',
+      title: 'Preço total',
+      message: 'O valor total é calculado automaticamente, conforme a quantidade e o preço.'
+    })
+    setIsWarningToastEnabled(false);
+    setTimeout(()=>{ setIsWarningToastEnabled(true) },5000);
+  }
+
   return(
-    <form ref={editFormRef} className="form" onSubmit={handleEditRegister}>
+    <form ref={editFormRef} className="form" onSubmit={editQuery}>
       <fieldset>
         <Input
           name='asset_class'
@@ -187,6 +203,7 @@ export function Form({ closeModalByForm }: FormProps){
           id='total'
           label='Total'
           readOnly
+          onKeyDown={showTotalInputMessage}
           value={getTotal()}
         />
         <Input
@@ -211,9 +228,9 @@ export function Form({ closeModalByForm }: FormProps){
           <button 
             type="submit" 
             className="submit"
-            disabled={true}
+            disabled={isLoading}
           >
-            { true
+            { isLoading
               ? <BounceLoader
                   color="#eef1ff"
                   size={20}

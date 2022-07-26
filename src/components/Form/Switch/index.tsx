@@ -26,6 +26,7 @@ export function Switch({ name, label, values, keyValues, defaultValue, ...rest }
         name={name}
         value={Number(value) === 0 ? keyValues[0] : keyValues[1] }
         onClick={handleClick}
+        onChange={()=>{}}
         { ...rest }
       />
       <div 
