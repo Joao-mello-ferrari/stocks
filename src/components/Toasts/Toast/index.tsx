@@ -42,9 +42,11 @@ export default function Toast({ data, styles }: ToastProps){
 
   return(
     <animated.div className="toast" style={{backgroundColor: bg[data.type], ...styles}}>
-      { icons[data.type] }
       <div>
-        <strong>{data.title}</strong>
+        <div className="title">
+          { icons[data.type] }
+          <strong>{data.title}</strong>
+        </div>
         {data.message && <p>{data.message}</p>}
       </div>
       <FiXCircle onClick={()=>{removeToast(data.id)}}/>
