@@ -33,11 +33,10 @@ export function Resume({ isResumeCLosed, onClose }: ResumeProps){
         else if(reg.action_type === 'sell'){
           const newSell = total.sell + (reg.price*reg.amount);
           const newAvailable = total.available - (reg.price*reg.amount);
-          return { ...total, buy: newSell, available: newAvailable };
+          return { ...total, sell: newSell, available: newAvailable };
         }
         return total;
       },{ buy: 0, sell: 0, available: 0})
-      
       setBuy(values.buy);
       setSell(values.sell);
       setAvailable(values.available);

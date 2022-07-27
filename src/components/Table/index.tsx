@@ -21,14 +21,14 @@ import { AppError } from '../../errors/AppError';
 import { deleteRegister } from '../../api/deleteRegister';
 
 import './styles.scss'
+import { ActionTypeRow } from './ActionTypeRow';
 
 interface TableProps{
   moreRows: boolean;
-  openRegisterEditForm: (state: boolean) => void;
   changeFormMethod: (method: 'POST' | 'PUT') => void;
 }
 
-export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: TableProps){
+export function Table({ moreRows, changeFormMethod }: TableProps){
   const { data, isLoading, error } = useQuery(
     'loadRegisters', 
     async () => await loadRegisters(), 
@@ -86,7 +86,8 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
   const { 
     storeRegisterToEdit, 
     storeFilteredRegisters,
-    filteredRegisters 
+    filteredRegisters,
+    storeModalState 
   } = useRegisters(); 
 
   useEffect(()=>{
@@ -166,7 +167,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
 
   function handleEditRegister(reg: Register){
     storeRegisterToEdit(reg);
-    openRegisterEditForm(true);
+    storeModalState(true);
     changeFormMethod('PUT'); 
   }
   
@@ -210,12 +211,12 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
         <table className="table">
           <thead>
             <tr>
-              <th>Classe</th>
-              <th>Ativo</th>
-              <th>Ação</th>
-              <th>Quantidade</th>
-              <th>Preço unitário</th>
-              <th>
+              <th style={{width: '15%'}}>Classe</th>
+              <th style={{width: '10%'}}>Ativo</th>
+              <th style={{width: '10%'}}>Operação</th>
+              <th style={{width: '15%'}}>Quantidade</th>
+              <th style={{width: '15%'}}>Preço unitário</th>
+              <th style={{width: '20%'}}>
                 Preço total
                 <FiChevronsUp 
                   className={`${!ascendentTotal && 'rotate'}`} 
@@ -226,7 +227,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
                 />
                 
               </th>
-              <th>
+              <th style={{width: '15%'}}>
                 Data
                 <FiChevronsUp
                   className={`${!ascendentDate && 'rotate'}`} 
@@ -249,7 +250,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
                 >
                   <td>{register.asset_class}</td>
                   <td>{register.name}</td>
-                  <td>{register.action_type === 'buy' ? 'C' : 'V'}</td>
+                  <ActionTypeRow type={register.action_type} />
                   <td>{formatNumber(String(register.amount))}</td>
                   <td>{formatCurrency(String(register.price))}</td>
                   <td>{formatCurrency(String(register.total))}</td>

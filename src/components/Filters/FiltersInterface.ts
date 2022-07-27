@@ -1,6 +1,5 @@
 export interface FiltersProps{
   customStyles: {},
-  onNewRegisterButtonClick: (state: boolean) => void;
   changeFormMethod: (method: 'POST' | 'PUT') => void;
 }
 

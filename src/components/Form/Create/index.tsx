@@ -16,12 +16,12 @@ import { AppError } from "../../../errors/AppError";
 
 import '../styles.scss';
 import { useMutation, useQueryClient } from "react-query";
+import { useRegisters } from "../../../contexts/registersContext";
 
-interface FormProps{
-  closeModalByForm: Dispatch<SetStateAction<boolean>>;
-}
 
-export function Form({ closeModalByForm }: FormProps){
+export function Form(){
+  const { storeModalState } = useRegisters();
+
   const queryClient = useQueryClient();
   const { mutate: createQuery, isLoading } = useMutation(
     (e: FormEvent)=>handleAddRegister(e),
@@ -36,7 +36,7 @@ export function Form({ closeModalByForm }: FormProps){
           queryClient.invalidateQueries('loadRegisters')
         }
         
-        closeModalByForm(false);
+        storeModalState(false);
       },
       onError: (err) => {
         if(err instanceof AppError){
@@ -56,6 +56,7 @@ export function Form({ closeModalByForm }: FormProps){
 
   const [priceInput, setPriceInput] = useState('');
   const [amountInput, setAmountInput] = useState('');
+  const [switchVal, setSwitchVal] = useState('buy');
 
   const [isWarningToastEnabled, setIsWarningToastEnabled] = useState(true);
 
@@ -77,6 +78,7 @@ export function Form({ closeModalByForm }: FormProps){
         case 'price': return newRegister.price =  +getRawCurVal(i.value);
         case 'amount': return newRegister.amount = +getRawNumberVal(i.value);
         case 'total': return newRegister.total = +getRawCurVal(i.value);
+        case 'action_type': return newRegister.action_type = i.value as 'buy' | 'sell';
         case 'date':
           const [y,m,d] = (i.value.split('-')).map(i=>Number(i));
           return newRegister.date = new Date(y,m-1,d).toISOString();
@@ -102,6 +104,7 @@ export function Form({ closeModalByForm }: FormProps){
   function clearInputs(){
     setPriceInput('');
     setAmountInput('');
+    setSwitchVal('buy')
   }
 
   function showTotalInputMessage(){
@@ -113,6 +116,11 @@ export function Form({ closeModalByForm }: FormProps){
     })
     setIsWarningToastEnabled(false);
     setTimeout(()=>{ setIsWarningToastEnabled(true) },5000);
+  }
+
+  function changeSwitchValue(){
+    if(switchVal === 'buy') return setSwitchVal('sell');
+    setSwitchVal('buy');
   }
 
   return(
@@ -174,8 +182,10 @@ export function Form({ closeModalByForm }: FormProps){
           name="action_type"
           id="action_type"
           label="Tipo: "
-          values={['Compra', 'Venda']}
-          keyValues={['buy', 'sell']}
+          value={switchVal}
+          isOnRight={switchVal === 'sell'}
+          changeValue={changeSwitchValue}
+          displayedValue={switchVal === 'buy' ? 'Compra' : 'Venda'}
         />
         <div className="buttons-container">
           <button 
@@ -203,7 +213,7 @@ export function Form({ closeModalByForm }: FormProps){
 
       <FiXCircle
         className="close-icon"
-        onClick={()=>{ closeModalByForm(false); }}
+        onClick={()=>{ storeModalState(false); }}
       />
     </form>
   )

@@ -1,27 +1,35 @@
 export function formatCurrency(value: string, shouldNotDivide=true): string{
   let valueToFormat = value;
-  if(value.length !== 1){
-    if(value.includes('R$')) value = value.slice(3);
-    if(!value.includes(',') && !value.includes('.')) value += '00';
-
-    value = value.replaceAll(',','');
-    value = value.replaceAll('.','');
-    if(!(/^[0-9]+$/.test(value))) value = value.slice(0,value.length-1);
+  let negativeFlag = false;
+  if(value.includes('-')){
+    valueToFormat = value.slice(1);
+    negativeFlag = true;
+  }
+ 
+  
+  if(valueToFormat.length !== 1){
+    if(valueToFormat.includes('R$')) valueToFormat = valueToFormat.slice(3);
+    if(!valueToFormat.includes(',') && !valueToFormat.includes('.')) valueToFormat += '00';
+    
+    valueToFormat = valueToFormat.replaceAll(',','');
+    valueToFormat = valueToFormat.replaceAll('.','');
+    if(!(/^[0-9]+$/.test(valueToFormat))) valueToFormat = valueToFormat.slice(0,valueToFormat.length-1);
     
     let decimal='', integer='';
-    for(let i=0; i < value.length; i++){
-      if(i < value.length-2)integer += value[i];
-      else if(i >= value.length-2) decimal += value[i];
+    for(let i=0; i < valueToFormat.length; i++){
+      if(i < valueToFormat.length-2)integer += valueToFormat[i];
+      else if(i >= valueToFormat.length-2) decimal += valueToFormat[i];
     }
     valueToFormat = integer + '.' + decimal;
   }
-  else if(!shouldNotDivide) valueToFormat = String(Number(value)/100);
+  else if(!shouldNotDivide) valueToFormat = String(Number(valueToFormat)/100);
   
-  if(!(/^[0-9]+$/.test(value))) valueToFormat = '';
-
+  if(!(/^[0-9].+$/.test(valueToFormat))) valueToFormat = '';
+  
   const formatter = Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'})
   valueToFormat = formatter.format(Number(valueToFormat));
   
+  if(negativeFlag) return '- ' + valueToFormat;
   return valueToFormat;
 }
 

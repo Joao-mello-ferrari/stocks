@@ -1,8 +1,9 @@
 export function getDateConverted(date: string, toPresent=false){
   const thisDate = new Date(date);
-  const y = thisDate.getFullYear();
+  const y = String(thisDate.getFullYear()).padStart(4,'0');;
   const m = String(thisDate.getMonth()+1).padStart(2,'0');
   const d = String(thisDate.getDate()).padStart(2,'0');
+
 
   if(toPresent) return `${d} / ${m} / ${y}`;
   return `${y}-${m}-${d}`;

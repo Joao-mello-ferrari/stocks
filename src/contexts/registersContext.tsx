@@ -6,12 +6,12 @@ import { Register } from '../interfaces/Register';
 
 
 interface RegistersContext{
-  allRegisters: Register[];
   filteredRegisters: Register[];
   registerToEdit: Register;
-  storeAllRegisters: (registers: Register[]) => void;
+  isRegisterModalOpen: boolean;
   storeFilteredRegisters: (registers: Register[]) => void;
   storeRegisterToEdit: (register: Register) => void;
+  storeModalState: (state: boolean) => void;
 }
 
 interface ResgistersContextProviderProps{
@@ -21,7 +21,6 @@ interface ResgistersContextProviderProps{
 const RegistersContext = createContext({} as RegistersContext);
 
 export function RegistersContenxtProvider({ children }: ResgistersContextProviderProps ){
-  const [allRegisters, setAllRegisters] = useState<Register[]>([]);
   const [filteredRegisters, setFilteredRegisters] = useState<Register[]>([]);
   
   const [registerToEdit, setRegisterToEdit] = useState<Register>(()=>{
@@ -35,28 +34,31 @@ export function RegistersContenxtProvider({ children }: ResgistersContextProvide
     return {} as Register;
   })
 
-  const storeAllRegisters = useCallback((registers: Register[])=>{
-    // const encryptedRegister = crypto.AES.encrypt(
-    //   JSON.stringify(register), 
-    //     import.meta.env.VITE_APP_ENCRYPT_SECRET
-    // ).toString();
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState<boolean>(()=>{
+    const cookies = parseCookies();
+    const state = cookies['@stocks:modal_state'];
 
-    // setCookie(null, '@stocks:register_to_edit', encryptedRegister, {
-    //   maxAge: 7 * 24 * 60 * 60
-    // })
-    setAllRegisters(registers);
-  },[]);
+    if (state !== null && state !== undefined){
+      const bytes = crypto.AES.decrypt(state, import.meta.env.VITE_APP_ENCRYPT_SECRET);
+      return JSON.parse(bytes.toString(crypto.enc.Utf8)).state;
+    }
+    return false;
+  })
 
   const storeFilteredRegisters = useCallback((registers: Register[])=>{
-    // const encryptedRegister = crypto.AES.encrypt(
-    //   JSON.stringify(register), 
-    //     import.meta.env.VITE_APP_ENCRYPT_SECRET
-    // ).toString();
-
-    // setCookie(null, '@stocks:register_to_edit', encryptedRegister, {
-    //   maxAge: 7 * 24 * 60 * 60
-    // })
     setFilteredRegisters(registers);
+  },[]);
+
+  const storeModalState = useCallback((state: boolean)=>{
+    const encryptedState = crypto.AES.encrypt(
+      JSON.stringify({ state }), 
+        import.meta.env.VITE_APP_ENCRYPT_SECRET
+    ).toString();
+
+    setCookie(null, '@stocks:modal_state', encryptedState, {
+      maxAge: 7 * 24 * 60 * 60
+    })
+    setIsRegisterModalOpen(state);
   },[]);
 
   const storeRegisterToEdit = useCallback((register: Register)=>{
@@ -74,12 +76,12 @@ export function RegistersContenxtProvider({ children }: ResgistersContextProvide
   return(
     <RegistersContext.Provider 
       value={{ 
-        allRegisters,
         filteredRegisters,
         registerToEdit,
-        storeAllRegisters, 
+        isRegisterModalOpen, 
         storeFilteredRegisters, 
-        storeRegisterToEdit 
+        storeRegisterToEdit,
+        storeModalState
     }}>
       { children }
     </RegistersContext.Provider>

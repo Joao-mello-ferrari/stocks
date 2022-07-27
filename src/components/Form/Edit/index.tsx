@@ -17,11 +17,7 @@ import { AppError } from "../../../errors/AppError";
 import { BounceLoader } from "react-spinners";
 import { useMutation, useQueryClient } from "react-query";
 
-interface FormProps{
-  closeModalByForm: Dispatch<SetStateAction<boolean>>;
-}
-
-export function Form({ closeModalByForm }: FormProps){
+export function Form(){
   const queryClient = useQueryClient();
   const { mutate: editQuery, isLoading } = useMutation(
     (e: FormEvent)=>handleEditRegister(e),
@@ -34,7 +30,7 @@ export function Form({ closeModalByForm }: FormProps){
             message: `Ativo ${reg.name} atualizado com sucesso.` 
           });
           queryClient.invalidateQueries('loadRegisters')
-          closeModalByForm(false);
+          storeModalState(false);
         }
         
       },
@@ -54,10 +50,11 @@ export function Form({ closeModalByForm }: FormProps){
     }
   );
 
-  const { registerToEdit: r } = useRegisters();
+  const { registerToEdit: r, storeModalState } = useRegisters();
   
   const [priceInput, setPriceInput] = useState(formatCurrency(String(r?.price)));
   const [amountInput, setAmountInput] = useState(formatNumber(String(r.amount)));
+  const [switchVal, setSwitchVal] = useState(r.action_type);
   
   const [isWarningToastEnabled, setIsWarningToastEnabled] = useState(true);
 
@@ -82,6 +79,7 @@ export function Form({ closeModalByForm }: FormProps){
         case 'price': return newRegister.price =  +getRawCurVal(i.value);
         case 'amount': return newRegister.amount = +getRawNumberVal(i.value);
         case 'total': return newRegister.total = +getRawCurVal(i.value);
+        case 'action_type': return newRegister.action_type = i.value as 'buy' | 'sell';
         case 'date':
           const [y,m,d] = (i.value.split('-')).map(i=>Number(i));
           return newRegister.date = new Date(y,m-1,d).toISOString();
@@ -126,6 +124,7 @@ export function Form({ closeModalByForm }: FormProps){
   function clearInputs(){
     setPriceInput('');
     setAmountInput('');
+    setSwitchVal(r.action_type);
   }
   
   function getPrice(){
@@ -150,6 +149,11 @@ export function Form({ closeModalByForm }: FormProps){
   function value(value: string | number){
     if(!value) return 'Não há';
     return String(value)
+  }
+
+  function changeSwitchValue(){
+    if(switchVal === 'buy') return setSwitchVal('sell');
+    setSwitchVal('buy');
   }
 
   function showTotalInputMessage(){
@@ -220,9 +224,10 @@ export function Form({ closeModalByForm }: FormProps){
           name="action_type"
           id="action_type"
           label="Tipo: "
-          values={['Compra', 'Venda']}
-          keyValues={['buy', 'sell']}
-          defaultValue={Number(r?.action_type === 'sell')}
+          value={switchVal}
+          isOnRight={switchVal === 'sell'}
+          changeValue={changeSwitchValue}
+          displayedValue={switchVal === 'buy' ? 'Compra' : 'Venda'}
         />
         <div className="buttons-container">
           <button 
@@ -250,7 +255,7 @@ export function Form({ closeModalByForm }: FormProps){
 
       <FiXCircle
         className="close-icon"
-        onClick={()=>{ closeModalByForm(false); }}
+        onClick={()=>{ storeModalState(false); }}
       />
     </form>
   )

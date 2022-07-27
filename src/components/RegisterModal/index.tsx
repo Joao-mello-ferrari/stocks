@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import Modal from 'react-modal';
+import { useRegisters } from '../../contexts/registersContext';
 
 import { Form as CreateForm } from '../Form/Create';
 import { Form as EditForm } from '../Form/Edit';
@@ -10,12 +11,13 @@ Modal.setAppElement('#root');
 
 interface ModalProps{
   open: boolean;
-  onClose: Dispatch<SetStateAction<boolean>>;
   method: 'POST' | 'PUT'; 
 }
 
 
-export function RegisterFormModal({ open, onClose, method }:ModalProps){
+export function RegisterFormModal({ open, method }:ModalProps){
+
+  const { storeModalState } = useRegisters();
 
   if(method === 'POST'){
     return(
@@ -24,13 +26,13 @@ export function RegisterFormModal({ open, onClose, method }:ModalProps){
         className="modal"
         overlayClassName="overlay"
         // onAfterOpen={afterOpenModal}
-        onRequestClose={()=>{onClose(false);}}
+        onRequestClose={()=>{storeModalState(false);}}
         // style={customStyles}
         contentLabel="Example Modal"
       >
         <main className="modal-content-container">
           <h2>Cadastre um novo ativo</h2>
-          <CreateForm closeModalByForm={onClose}/>
+          <CreateForm />
         </main>
       </Modal>
     )
@@ -41,12 +43,12 @@ export function RegisterFormModal({ open, onClose, method }:ModalProps){
         isOpen={open}
         className="modal"
         overlayClassName="overlay"
-        onRequestClose={()=>{onClose(false);}}
+        onRequestClose={()=>{storeModalState(false);}}
         contentLabel="Example Modal"
       >
         <main className="modal-content-container">
           <h2>Edição de ativo</h2>
-          <EditForm closeModalByForm={onClose}/>
+          <EditForm />
         </main>
       </Modal>
   )

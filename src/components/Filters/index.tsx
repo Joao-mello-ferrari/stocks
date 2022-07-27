@@ -32,10 +32,8 @@ const operands: Operand[] = [
 
 export function Filters({ 
   customStyles, 
-  onNewRegisterButtonClick,
   changeFormMethod 
 }: FiltersProps){
-
     const { data: allRegisters } = useQuery(
     'loadRegisters', 
     async () => await loadRegisters(), 
@@ -54,7 +52,7 @@ export function Filters({
   const [isWarningToastEnabled, setIsWarningToastEnabled] = useState(true);
   const [overflow, setOverflow] = useState('overflow');
 
-  const { storeFilteredRegisters } = useRegisters();
+  const { storeFilteredRegisters, storeModalState } = useRegisters();
   const { addToast } = useToast();
 
   const filterInputRef = useRef() as MutableRefObject<HTMLLabelElement>;
@@ -280,7 +278,7 @@ export function Filters({
       <button 
         className="button"
         onClick={()=>{
-          onNewRegisterButtonClick(true);
+          storeModalState(true);
           changeFormMethod('POST');
         }}
       >

@@ -8,6 +8,6 @@ export interface Register{
   price: number;
   total: number;
   date: string;
-  action_type: 'buy' | 'sell' | string;
+  action_type: 'buy' | 'sell';
 };
 
