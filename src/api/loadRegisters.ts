@@ -13,10 +13,7 @@ interface FaunaRegisterResponse{
   ][]
 }
 
-// export async function loadRegisters(userEmail: string): Promise<Register[]>{
-export async function loadRegisters(): Promise<Register[]>{
-  
-  const userEmail  = 'joao.vico.mellof@gmail.com';
+export async function loadRegisters(userEmail: string): Promise<Register[]>{
   try{
     const registers = await faunaClient.query<FaunaRegisterResponse>(
       q.Map(
@@ -50,7 +47,7 @@ export async function loadRegisters(): Promise<Register[]>{
       })
     return mappedRegs
     
-  }catch(err){
+  } catch(err){
     const errorReason = safeVerifyError(err, [
       'requestResult',
       'responseContent',

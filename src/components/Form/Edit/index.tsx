@@ -1,21 +1,22 @@
 import { ChangeEvent, FormEvent, MutableRefObject, SetStateAction, useRef, useState } from "react";
-import { Input } from "./Input";
-import { Switch } from "../Switch";
 
+import { useMutation, useQueryClient } from "react-query";
+import { updateRegister } from "../../../api/updateRegister";
 import { useToast } from "../../../contexts/toastContext";
 import { useRegisters } from "../../../contexts/registersContext";
 import { calculateTotal, formatCurrency, formatNumber, getRawCurVal, getRawNumberVal } from "../../../helpers/numbersFormatters";
-import { onSubmitInputProps } from "../../../interfaces/Submit";
 import { getDateConverted } from "../../../helpers/dateConversion";
 
+import { Input } from "./Input";
+import { Switch } from "../Switch";
 import { FiXCircle } from 'react-icons/fi'
-
-import '../styles.scss'
-import { updateRegister } from "../../../api/updateRegister";
-import { Register } from "../../../interfaces/Register";
-import { AppError } from "../../../errors/AppError";
 import { BounceLoader } from "react-spinners";
-import { useMutation, useQueryClient } from "react-query";
+
+import { AppError } from "../../../errors/AppError";
+import { onSubmitInputProps } from "../../../interfaces/Submit";
+import { Register } from "../../../interfaces/Register";
+
+import '../styles.scss';
 
 export function Form(){
   const queryClient = useQueryClient();

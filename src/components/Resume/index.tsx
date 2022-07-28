@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
-import { FiChevronDown, FiX } from 'react-icons/fi'
+
 import { useQuery } from 'react-query';
 import { loadRegisters } from '../../api/loadRegisters';
+import { useAuth } from '../../contexts/authContext';
+
+import { FiChevronDown, FiX } from 'react-icons/fi';
 import { Card } from './Card';
 
-import './styles.scss'
+import './styles.scss';
 
 interface ResumeProps{
   isResumeCLosed: boolean;
@@ -12,9 +15,11 @@ interface ResumeProps{
 }
 
 export function Resume({ isResumeCLosed, onClose }: ResumeProps){
+  const { user } = useAuth();
+  
   const { data, isLoading, error } = useQuery(
     'loadRegisters', 
-    async () => await loadRegisters(), 
+    async () => await loadRegisters(user?.email), 
     { staleTime: Infinity }
   );
 

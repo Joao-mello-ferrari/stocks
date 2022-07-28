@@ -1,7 +1,9 @@
-import Toast from './Toast'
-import { useTransition } from 'react-spring'
+import { useTransition } from 'react-spring';
+import Toast from './Toast';
 
-import { Toast as ToastType } from '../../interfaces/Toast'
+import { Toast as ToastType } from '../../interfaces/Toast';
+
+import './styles.scss';
 
 interface ToastContainerProps{
   toasts: ToastType[];

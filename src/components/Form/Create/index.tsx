@@ -1,23 +1,23 @@
-import { ChangeEvent, Dispatch, FormEvent, MutableRefObject, SetStateAction, useRef, useState } from "react";
-import { Input } from "./Input";
+import { ChangeEvent, FormEvent, MutableRefObject, useRef, useState } from "react";
 
 import { formatCurrency, formatNumber, calculateTotal, getRawCurVal, getRawNumberVal } from '../../../helpers/numbersFormatters'
 
-import { useToast } from "../../../contexts/toastContext";
-import { onSubmitInputProps } from "../../../interfaces/Submit";
-
-import { BounceLoader } from "react-spinners";
-import { FiXCircle } from "react-icons/fi";
-import { Switch } from "../Switch";
-import { createRegister } from "../../../api/createRegister";
-import { useAuth } from "../../../contexts/authContext";
-import { Register } from "../../../interfaces/Register";
-import { AppError } from "../../../errors/AppError";
-
-import '../styles.scss';
 import { useMutation, useQueryClient } from "react-query";
 import { useRegisters } from "../../../contexts/registersContext";
+import { useToast } from "../../../contexts/toastContext";
+import { useAuth } from "../../../contexts/authContext";
+import { createRegister } from "../../../api/createRegister";
 
+import { FiXCircle } from "react-icons/fi";
+import { BounceLoader } from "react-spinners";
+import { Switch } from "../Switch";
+import { Input } from "./Input";
+
+import { AppError } from "../../../errors/AppError";
+import { Register } from "../../../interfaces/Register";
+import { onSubmitInputProps } from "../../../interfaces/Submit";
+
+import '../styles.scss';
 
 export function Form(){
   const { storeModalState } = useRegisters();

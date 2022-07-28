@@ -1,7 +1,7 @@
 import { FiAlertTriangle } from "react-icons/fi";
-import { HashLoader } from 'react-spinners'
+import { HashLoader } from 'react-spinners';
 
-import './styles.scss'
+import './styles.scss';
 
 interface DefaultContentProps{
   noData: boolean;

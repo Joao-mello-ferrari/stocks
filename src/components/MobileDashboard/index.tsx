@@ -1,6 +1,6 @@
 import { FiAirplay } from "react-icons/fi";
 
-import './styles.scss'
+import './styles.scss';
 
 export function MobileDashBoard(){
   return(

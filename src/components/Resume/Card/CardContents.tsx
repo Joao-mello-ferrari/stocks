@@ -1,5 +1,5 @@
-import ContentLoader from "react-content-loader"
-import { formatCurrency } from "../../../helpers/numbersFormatters"
+import ContentLoader from "react-content-loader";
+import { formatCurrency } from "../../../helpers/numbersFormatters";
 
 function LoaderSkeleton(){
   return(

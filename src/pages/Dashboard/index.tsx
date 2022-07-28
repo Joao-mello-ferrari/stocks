@@ -1,20 +1,20 @@
-import { useState } from "react"
+import { useState } from "react";
 
-import { Header } from '../../components/Header'
-import { Resume } from "../../components/Resume"
-import { Filters } from "../../components/Filters"
-import { Table } from "../../components/Table"
-import { RegisterFormModal } from '../../components/RegisterModal'
-import { MobileDashBoard } from "../../components/MobileDashboard"
+import { useRegisters } from "../../contexts/registersContext";
 
-import './styles.scss'
-import { useRegisters } from "../../contexts/registersContext"
+import { Header } from "../../components/Header";
+import { Resume } from "../../components/Resume";
+import { Filters } from "../../components/Filters";
+import { Table } from "../../components/Table";
+import { RegisterFormModal } from "../../components/RegisterModal";
+import { MobileDashBoard } from "../../components/MobileDashboard";
+
+import './styles.scss';
 
 export function Dashboard(){
   const { isRegisterModalOpen } = useRegisters();
 
   const [isResumeClosed, setIsResumeClosed] = useState(false);
-  // const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(isModalOpen);
   const [formMethod, setFormMethod] = useState<'POST' | 'PUT'>('POST');
   
   if(window.innerWidth < 768){

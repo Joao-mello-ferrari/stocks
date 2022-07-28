@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction } from 'react';
 import Modal from 'react-modal';
+
 import { useRegisters } from '../../contexts/registersContext';
 
 import { Form as CreateForm } from '../Form/Create';

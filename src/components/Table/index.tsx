@@ -1,27 +1,24 @@
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { FiChevronsUp, FiTool, FiXSquare } from 'react-icons/fi';
-
-import { compareNumbers, formatCurrency, formatNumber } from '../../helpers/numbersFormatters';
-
-import { Pagination } from './Pagination'
-import { EmptyRows } from './EmptyRows';
-import { DefaultContent } from './DefaultContent';
 
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-
 import { useRegisters } from '../../contexts/registersContext';
 import { useToast } from '../../contexts/toastContext';
-
-import { compareDates, getDateConverted } from '../../helpers/dateConversion';
+import { useAuth } from '../../contexts/authContext';
 import { loadRegisters } from '../../api/loadRegisters';
+import { compareNumbers, formatCurrency, formatNumber } from '../../helpers/numbersFormatters';
+import { compareDates, getDateConverted } from '../../helpers/dateConversion';
+
+import { Pagination } from './Pagination';
+import { EmptyRows } from './EmptyRows';
+import { DefaultContent } from './DefaultContent';
+import { ActionTypeRow } from './ActionTypeRow';
+import { FiChevronsUp, FiTool, FiXSquare } from 'react-icons/fi';
 
 import { Register } from '../../interfaces/Register';
-
 import { AppError } from '../../errors/AppError';
 import { deleteRegister } from '../../api/deleteRegister';
 
-import './styles.scss'
-import { ActionTypeRow } from './ActionTypeRow';
+import './styles.scss';
 
 interface TableProps{
   moreRows: boolean;
@@ -29,9 +26,11 @@ interface TableProps{
 }
 
 export function Table({ moreRows, changeFormMethod }: TableProps){
+  const { user } = useAuth();
+  
   const { data, isLoading, error } = useQuery(
     'loadRegisters', 
-    async () => await loadRegisters(), 
+    async () => await loadRegisters(user?.email), 
     { staleTime: Infinity }
   );
   

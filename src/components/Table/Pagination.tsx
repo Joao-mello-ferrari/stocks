@@ -2,7 +2,7 @@ interface PaginationProps{
   page: number;
   total: number;
   rowsPerPage: number;
-  onNavigate: React.Dispatch<React.SetStateAction<number>>
+  onNavigate: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export function Pagination({ 

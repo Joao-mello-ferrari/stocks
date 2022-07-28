@@ -2,9 +2,9 @@ import { query as q } from 'faunadb'
 import { faunaClient } from '../clients/faunadb'
 import { AppError } from '../errors/AppError';
 import { safeVerifyError } from '../errors/FaunaErrorHandler';
-import { FaunaRefObject } from '../interfaces/FaunaRefObject';
 
 import { Register } from '../interfaces/Register'
+import { FaunaRefObject } from '../interfaces/FaunaRefObject';
 
 interface FaunaRegisterResponse{
   ref: FaunaRefObject;

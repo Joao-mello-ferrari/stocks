@@ -1,11 +1,12 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
-
 import { FiFilter, FiChevronDown } from 'react-icons/fi'
+
 import { useQuery } from 'react-query';
 import { loadRegisters } from '../../api/loadRegisters';
 
 import { useRegisters } from '../../contexts/registersContext';
 import { useToast } from '../../contexts/toastContext';
+import { useAuth  } from '../../contexts/authContext';
 
 import { compareDates, isoDateFromInput } from '../../helpers/dateConversion';
 import { compareNumbers, formatCurrency, formatNumber, getRawCurVal, getRawNumberVal } from '../../helpers/numbersFormatters';
@@ -34,9 +35,11 @@ export function Filters({
   customStyles, 
   changeFormMethod 
 }: FiltersProps){
+    const { user } = useAuth();
+
     const { data: allRegisters } = useQuery(
     'loadRegisters', 
-    async () => await loadRegisters(), 
+    async () => await loadRegisters(user?.email), 
     { staleTime: Infinity }
   );
 

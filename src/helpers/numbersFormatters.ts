@@ -5,7 +5,6 @@ export function formatCurrency(value: string, shouldNotDivide=true): string{
     valueToFormat = value.slice(1);
     negativeFlag = true;
   }
- 
   
   if(valueToFormat.length !== 1){
     if(valueToFormat.includes('R$')) valueToFormat = valueToFormat.slice(3);

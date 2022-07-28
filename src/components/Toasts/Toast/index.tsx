@@ -1,12 +1,11 @@
 import { useEffect } from "react";
-import { useToast } from '../../../contexts/toastContext'
+import { animated } from 'react-spring';
+import { useToast } from '../../../contexts/toastContext';
 
 import { FiCheckCircle, FiHelpCircle, FiAlertTriangle, FiXCircle } from "react-icons/fi";
-
-import { animated } from 'react-spring';
 import { Toast as ToastType } from "../../../interfaces/Toast";
 
-import '../styles.scss'
+import '../styles.scss';
 
 interface ToastProps{
   data: ToastType;

@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useCallback, useContext, useState } from "react";
-import { parseCookies, setCookie, destroyCookie } from 'nookies'
+import { parseCookies, setCookie } from 'nookies';
 import crypto from 'crypto-js';
 
 import { Register } from '../interfaces/Register';

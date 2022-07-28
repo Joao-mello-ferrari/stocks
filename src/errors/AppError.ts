@@ -6,5 +6,4 @@ export class AppError{
     this.title = title;
     this.message = message;
   }
-  
 }
