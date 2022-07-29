@@ -2,7 +2,7 @@ import { DetailedHTMLProps, InputHTMLAttributes } from 'react';
 import { FiCalendar, FiDollarSign, FiEdit3, 
   FiFileText, FiLayers, FiTag } from 'react-icons/fi';
 
-import './styles.scss'
+import './styles.scss';
 
 interface InputProps extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>{
   name: 'name' | 'asset_class' | 'amount' | 'price' | 'total' | 'date';

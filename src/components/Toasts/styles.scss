@@ -6,6 +6,10 @@
   width: 16rem;
   z-index: 3;
   max-height: 90vh;
+
+  display: flex;
+  flex-direction: column;
+  padding-right: 2rem;
 }
 
 .toast-container div + div{
@@ -14,12 +18,12 @@
 
 .toast{
   position: relative;
-  width: 14rem;
+  flex: 1;
   height: auto;
   border-radius: 0.5rem;
 
   display: flex;
-  padding: 0.5rem 0.5rem 0.2rem 0.5rem;
+  padding: 0.6rem 0.6rem 0;
 
   color: #4e4e4e;
 }
@@ -36,10 +40,20 @@
   font-size: 0.8rem;
   color: #111111;
 }
-.toast > span{
-  padding-top: 0.1rem;
-  color: #111111;
+
+.toast .title{
+  display: flex;
+  align-items: center;
+
+  svg{
+    margin-right: 0.4rem;
+  }
 }
-.toast div + span:hover{
-  cursor: pointer;
+
+.toast > svg{
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  
+  color: #111111;
 }

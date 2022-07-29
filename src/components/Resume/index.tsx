@@ -1,6 +1,14 @@
-import { FiArrowDownCircle, FiArrowUpCircle, FiChevronDown, FiDollarSign, FiX } from 'react-icons/fi'
+import { useEffect, useState } from 'react';
 
-import './styles.scss'
+import { loadRegisters } from '../../api/loadRegisters';
+import { useQuery } from 'react-query';
+import { useAuth } from '../../contexts/authContext';
+import { useRegisters } from '../../contexts/registersContext';
+
+import { FiChevronDown, FiX } from 'react-icons/fi';
+import { Card } from './Card';
+
+import './styles.scss';
 
 interface ResumeProps{
   isResumeCLosed: boolean;
@@ -8,50 +16,76 @@ interface ResumeProps{
 }
 
 export function Resume({ isResumeCLosed, onClose }: ResumeProps){
+  const { user } = useAuth();
 
+  const { filteredRegisters: data } = useRegisters();
+  
+  const { isLoading, error } = useQuery(
+    'loadRegisters', 
+    async () => await loadRegisters(user?.email), 
+    { staleTime: Infinity }
+  );
+
+  const [buy, setBuy] = useState<number>(0);
+  const [sell, setSell] = useState<number>(0);
+  const [available, setAvailable] = useState<number>(0);
+
+  useEffect(()=>{
+    if(data !== undefined){
+      const values = data.reduce((total, reg)=>{
+        if(reg.action_type === 'buy'){
+          const newBuy = total.buy + (reg.price*reg.amount);
+          const newAvailable = total.available + (reg.price*reg.amount);
+          return { ...total, buy: newBuy, available: newAvailable };
+        }
+        else if(reg.action_type === 'sell'){
+          const newSell = total.sell + (reg.price*reg.amount);
+          const newAvailable = total.available - (reg.price*reg.amount);
+          return { ...total, sell: newSell, available: newAvailable };
+        }
+        return total;
+      },{ buy: 0, sell: 0, available: 0})
+      setBuy(values.buy);
+      setSell(values.sell);
+      setAvailable(values.available);
+    }
+  },[data]);
+  
   return(
     <section className={
       `resume-container
-      ${ isResumeCLosed ? 'resume-container-tighten' : '' }`
+      ${ isResumeCLosed && 'resume-container-tighten' }`
     }>
       <div 
         className={
           `resume-itens-container
-          ${ isResumeCLosed ? 'resume-itens-container-tighten' : ''}
-        `}>
-          
-        <div className={
-          `card buy 
-          ${ isResumeCLosed ? 'card-translate-y' : ''}`
-        }>
-          <div className="title">
-            <FiArrowDownCircle/>
-            <span>Valor comprado</span>
-          </div>
-          <strong>R$ 1.000,00</strong>
-        </div>
+          ${ isResumeCLosed && 'resume-itens-container-tighten' }
+        `}
+      >
+        <Card
+          type='buy'
+          loading={isLoading}
+          error={error !== null}
+          translate={isResumeCLosed}
+          value={buy}
+        />
 
-        <div className={
-          `card sell 
-          ${ isResumeCLosed ? 'card-translate-y' : ''}`
-        }>
-          <div className="title">
-            <FiArrowUpCircle/>
-            <span>Valor vendido</span>
-          </div>
-          <strong>R$ 1.000,00</strong>
-        </div>
+        <Card
+          type='sell'
+          loading={isLoading}
+          error={error !== null}
+          translate={isResumeCLosed}
+          value={sell}
+        />
 
-        <div className={
-          `card 
-          ${ isResumeCLosed ? 'card-translate-y' : ''}`
-        }>
-          <div className="title">
-            <FiDollarSign/>
-            <span>Total em conta</span>
-          </div>
-          <strong>R$ 1.000,00</strong>
-        </div>
+        <Card
+          type='available'
+          loading={isLoading}
+          error={error !== null}
+          translate={isResumeCLosed}
+          value={available}
+        />
+        
 
         { isResumeCLosed
           ? <FiChevronDown className="close-icon" onClick={()=>{ onClose(false); }}/>

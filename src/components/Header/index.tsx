@@ -1,10 +1,9 @@
 import {  useGoogleLogout } from "react-google-login";
-import { useAuth } from '../../contexts/authContext'
+import { useAuth } from '../../contexts/authContext';
 
-import { FiTrendingUp, FiLogOut } from 'react-icons/fi'
+import { FiTrendingUp, FiLogOut } from 'react-icons/fi';
 
-
-import './styles.scss'
+import './styles.scss';
 
 export function Header(){
   const { user, logout } = useAuth();

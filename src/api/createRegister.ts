@@ -4,10 +4,16 @@ import { AppError } from '../errors/AppError';
 import { safeVerifyError } from '../errors/FaunaErrorHandler';
 
 import { Register } from '../interfaces/Register'
+import { FaunaRefObject } from '../interfaces/FaunaRefObject';
 
-export async function createRegister(userEmail: string, register:Register): Promise<{ data:Register}>{
+interface FaunaRegisterResponse{
+  ref: FaunaRefObject;
+  data :Omit<Register,'ref'>
+}
+
+export async function createRegister(userEmail: string, register:Register): Promise<Register>{
   try{
-    const newRegister = await faunaClient.query<{ data:Register}>(
+    const { ref, data } = await faunaClient.query<FaunaRegisterResponse>(
       q.Create(
         q.Collection('stocks'),
         {
@@ -26,8 +32,8 @@ export async function createRegister(userEmail: string, register:Register): Prom
         },
         )
     );
-
-    return newRegister;
+    const newRegister = { ref, ...data };
+    return newRegister
 
   }catch(err){
     const errorReason = safeVerifyError(err, [

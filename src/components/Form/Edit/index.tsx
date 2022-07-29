@@ -1,40 +1,67 @@
-import { ChangeEvent, Dispatch, FormEvent, MutableRefObject, SetStateAction, useRef, useState } from "react";
-import { Input } from "./Input";
-import { Switch } from "../Switch";
+import { ChangeEvent, FormEvent, MutableRefObject, SetStateAction, useRef, useState } from "react";
 
-import { useAuth } from "../../../contexts/authContext";
+import { useMutation, useQueryClient } from "react-query";
+import { updateRegister } from "../../../api/updateRegister";
 import { useToast } from "../../../contexts/toastContext";
 import { useRegisters } from "../../../contexts/registersContext";
 import { calculateTotal, formatCurrency, formatNumber, getRawCurVal, getRawNumberVal } from "../../../helpers/numbersFormatters";
-import { onSubmitInputProps } from "../../../interfaces/Submit";
-import { getDateConverted, isoDateFromInput } from "../../../helpers/dateConversion";
+import { getDateConverted } from "../../../helpers/dateConversion";
 
+import { Input } from "./Input";
+import { Switch } from "../Switch";
 import { FiXCircle } from 'react-icons/fi'
-
-import '../styles.scss'
-import { updateRegister } from "../../../api/updateRegister";
-import { Register } from "../../../interfaces/Register";
-import { AppError } from "../../../errors/AppError";
 import { BounceLoader } from "react-spinners";
 
-interface FormProps{
-  closeModalByForm: Dispatch<SetStateAction<boolean>>;
-}
+import { AppError } from "../../../errors/AppError";
+import { onSubmitInputProps } from "../../../interfaces/Submit";
+import { Register } from "../../../interfaces/Register";
 
-export function Form({ closeModalByForm }: FormProps){
-  const { registerToEdit: r } = useRegisters();
+import '../styles.scss';
+
+export function Form(){
+  const queryClient = useQueryClient();
+  const { mutate: editQuery, isLoading } = useMutation(
+    (e: FormEvent)=>handleEditRegister(e),
+    {
+      onSuccess: (reg: Register | undefined) => {
+        if(reg !== undefined){
+          addToast({ 
+            type: 'success', 
+            title: 'Edição', 
+            message: `Ativo ${reg.name} atualizado com sucesso.` 
+          });
+          queryClient.invalidateQueries('loadRegisters')
+          storeModalState(false);
+        }
+        
+      },
+      onError: (err) => {
+        if(err instanceof AppError){
+          const { title, message } = err;
+          addToast({ type: 'error', title, message });
+        }
+        else{
+          addToast({ 
+            type: 'error', 
+            title: 'Edição', 
+            message: 'Erro ao realizar operação.' 
+          });
+        }
+      }
+    }
+  );
+
+  const { registerToEdit: r, storeModalState } = useRegisters();
   
   const [priceInput, setPriceInput] = useState(formatCurrency(String(r?.price)));
   const [amountInput, setAmountInput] = useState(formatNumber(String(r.amount)));
+  const [switchVal, setSwitchVal] = useState(r.action_type);
   
+  const [isWarningToastEnabled, setIsWarningToastEnabled] = useState(true);
+
   const editFormRef = useRef() as MutableRefObject<HTMLFormElement>;
   
   const { addToast } = useToast(); 
-
-  function value(value: string | number){
-    if(!value) return 'Não há';
-    return String(value)
-  }
 
   async function handleEditRegister(e: FormEvent){
     e.preventDefault();
@@ -53,6 +80,7 @@ export function Form({ closeModalByForm }: FormProps){
         case 'price': return newRegister.price =  +getRawCurVal(i.value);
         case 'amount': return newRegister.amount = +getRawNumberVal(i.value);
         case 'total': return newRegister.total = +getRawCurVal(i.value);
+        case 'action_type': return newRegister.action_type = i.value as 'buy' | 'sell';
         case 'date':
           const [y,m,d] = (i.value.split('-')).map(i=>Number(i));
           return newRegister.date = new Date(y,m-1,d).toISOString();
@@ -69,37 +97,8 @@ export function Form({ closeModalByForm }: FormProps){
       return;
     }
     
-    try{
-      const updatedRegister = await updateRegister(r.ref, newRegister);
-      
-      // update cache
+    return await updateRegister(r.ref, newRegister);
 
-      addToast({ 
-        type: 'success', 
-        title: 'Edição', 
-        message: `Ativo ${newRegister.name} atualizado com sucesso.` 
-      });
-      closeModalByForm(false);
-      
-    }catch(err){
-      if(err instanceof AppError){
-        const { title, message } = err;
-        addToast({ type: 'error', title, message });
-      }
-      else{
-        addToast({ 
-          type: 'error', 
-          title: 'Edição', 
-          message: 'Erro ao realizar operação.' 
-        });
-      }
-    }finally{ 
-      // setIsSubmiting(false); 
-      // setHasSubmited(true);
-    }
-    
-    
-    
     function getDefaultValues(key: onSubmitInputProps['id']): string{
       switch(key){
         case 'amount': return formatNumber(String(r?.amount));
@@ -126,6 +125,7 @@ export function Form({ closeModalByForm }: FormProps){
   function clearInputs(){
     setPriceInput('');
     setAmountInput('');
+    setSwitchVal(r.action_type);
   }
   
   function getPrice(){
@@ -147,8 +147,29 @@ export function Form({ closeModalByForm }: FormProps){
     return mainValue || defaultValue;
   }
 
+  function value(value: string | number){
+    if(!value) return 'Não há';
+    return String(value)
+  }
+
+  function changeSwitchValue(){
+    if(switchVal === 'buy') return setSwitchVal('sell');
+    setSwitchVal('buy');
+  }
+
+  function showTotalInputMessage(){
+    if(!isWarningToastEnabled) return;
+    addToast({
+      type: 'warning',
+      title: 'Preço total',
+      message: 'O valor total é calculado automaticamente, conforme a quantidade e o preço.'
+    })
+    setIsWarningToastEnabled(false);
+    setTimeout(()=>{ setIsWarningToastEnabled(true) },5000);
+  }
+
   return(
-    <form ref={editFormRef} className="form" onSubmit={handleEditRegister}>
+    <form ref={editFormRef} className="form" onSubmit={editQuery}>
       <fieldset>
         <Input
           name='asset_class'
@@ -187,6 +208,7 @@ export function Form({ closeModalByForm }: FormProps){
           id='total'
           label='Total'
           readOnly
+          onKeyDown={showTotalInputMessage}
           value={getTotal()}
         />
         <Input
@@ -203,17 +225,18 @@ export function Form({ closeModalByForm }: FormProps){
           name="action_type"
           id="action_type"
           label="Tipo: "
-          values={['Compra', 'Venda']}
-          keyValues={['buy', 'sell']}
-          defaultValue={Number(r?.action_type === 'sell')}
+          value={switchVal}
+          isOnRight={switchVal === 'sell'}
+          changeValue={changeSwitchValue}
+          displayedValue={switchVal === 'buy' ? 'Compra' : 'Venda'}
         />
         <div className="buttons-container">
           <button 
             type="submit" 
             className="submit"
-            disabled={true}
+            disabled={isLoading}
           >
-            { true
+            { isLoading
               ? <BounceLoader
                   color="#eef1ff"
                   size={20}
@@ -233,7 +256,7 @@ export function Form({ closeModalByForm }: FormProps){
 
       <FiXCircle
         className="close-icon"
-        onClick={()=>{ closeModalByForm(false); }}
+        onClick={()=>{ storeModalState(false); }}
       />
     </form>
   )

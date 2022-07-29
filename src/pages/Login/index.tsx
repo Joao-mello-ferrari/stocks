@@ -1,16 +1,16 @@
-import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline, GoogleLogout } from 'react-google-login'
+import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
 
-import { login as loginService } from '../../api/login'
-import { useAuth } from '../../contexts/authContext'
-import { useToast } from '../../contexts/toastContext'
-import { AppError } from '../../errors/AppError'
+import { login as loginService } from "../../api/login";
+import { useAuth } from "../../contexts/authContext";
+import { useToast } from "../../contexts/toastContext";
 
-import './styles.scss'
+import { AppError } from "../../errors/AppError";
+
+import "./styles.scss";
 
 export function Login(){
   const { login } = useAuth();
   const { addToast } = useToast();
-
 
   async function onSuccess(r:GoogleLoginResponse | GoogleLoginResponseOffline){
     

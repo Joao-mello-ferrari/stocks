@@ -1,6 +1,6 @@
 import { FiAirplay } from "react-icons/fi";
 
-import './styles.scss'
+import './styles.scss';
 
 export function MobileDashBoard(){
   return(
@@ -10,7 +10,7 @@ export function MobileDashBoard(){
       </h3>
       <h4>Esse sistema ainda não está disponível para ser visualizado pelo celular</h4>
       <h4>
-        Acesse pelo seu computador e controle suas financças! 
+        Acesse pelo seu computador e controle suas finanças! 
       </h4>
         <FiAirplay/>
     </div>

@@ -5,7 +5,7 @@ import { Dashboard } from "./pages/Dashboard";
 import { Login } from "./pages/Login";
 
 export function Routes(){
-  const { user, isLogged } = useAuth();
+  const { isLogged } = useAuth();
   
   return(
     <BrowserRouter>

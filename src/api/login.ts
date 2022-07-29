@@ -30,7 +30,7 @@ export async function login( user: LoginUser ){
         )
       )
     )
-  }catch(err){ 
+  } catch(err){ 
     const errorReason = safeVerifyError(err, [
       'requestResult',
       'responseContent',

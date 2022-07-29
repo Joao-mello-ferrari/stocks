@@ -45,10 +45,9 @@ export async function loadRegisters(userEmail: string): Promise<Register[]>{
           ...subArray[1]
         }
       })
-    
     return mappedRegs
     
-  }catch(err){
+  } catch(err){
     const errorReason = safeVerifyError(err, [
       'requestResult',
       'responseContent',
