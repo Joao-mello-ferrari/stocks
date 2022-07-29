@@ -21,30 +21,47 @@
       margin-top: auto;
       align-items: center;
       
-      button{
-        height: 3rem;
-        width: 12rem;
-        border-radius: 0.4rem;
-        outline: none;
-        font-size: 1rem;
-        font-weight: 600;
+      .buttons-container{
+        display: flex;
 
-        transition: opacity 0.2s;
-
-        & + button{
-          margin-left: 3rem;
+        button{
+          height: 3rem;
+          width: 12rem;
+          border-radius: 0.4rem;
+          outline: none;
+          font-size: 1rem;
+          font-weight: 600;
+  
+          transition: opacity 0.2s;
+  
+          & + button{
+            margin-left: 3rem;
+          }
+  
+          &:hover{
+            opacity: 0.8;
+          }
         }
-
-        &:hover{
-          opacity: 0.8;
+  
+        .submit{
+          background: $theme;
+          position: relative;
+          &:disabled{
+            cursor: not-allowed;
+            background: $theme-light;
+          }
+  
+          span{
+            position: absolute!important;
+            width: 1.4rem!important;
+            height: 1.4rem!important;
+            top: 0.8rem;
+            left: 5.3rem
+          }
         }
-      }
-
-      .submit{
-        background: $theme;
-      }
-      .reset{
-        background: $text;
+        .reset{
+          background: $text;
+        }
       }
     }
   }

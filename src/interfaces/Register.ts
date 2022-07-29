@@ -1,11 +1,13 @@
+import { FaunaRefObject } from './FaunaRefObject'
+
 export interface Register{
-  id: string;
+  ref: FaunaRefObject;
   asset_class: string;
   name: string;
   amount: number;
   price: number;
   total: number;
   date: string;
-  action_type: 'buy' | 'sell';
+  action_type: 'buy' | 'sell' | string;
 };
 

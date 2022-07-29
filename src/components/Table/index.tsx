@@ -9,11 +9,16 @@ import { DefaultContent } from './DefaultContent';
 
 import { useRegisters } from '../../contexts/registersContext';
 import { useToast } from '../../contexts/toastContext';
+import { useAuth } from '../../contexts/authContext';
+
 import { compareDates, getDateConverted } from '../../helpers/dateConversion';
+import { loadRegisters } from '../../api/loadRegisters';
 
 import { Register } from '../../interfaces/Register';
 
 import './styles.scss'
+import { AppError } from '../../errors/AppError';
+import { deleteRegister } from '../../api/deleteRegister';
 
 
 interface TableProps{
@@ -32,13 +37,17 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
   const [emptyRows_RowsPerPage, setEmptyRows_RowsPerPage] = useState(rowsPerPage);
 
   const [currentPage, setCurrentPage] = useState(0);
-  const [totalRegisters, setTotalRegisters] = useState(11);
+  const [filteredRegisterCount, setFilteredRegisterCount] = useState(11);
 
   const [ascendentTotal, setAscendentTotal] = useState(true);
   const [ascendentDate, setAscendentDate] = useState(true);
 
+  const [isSubmiting, setIsSubmiting] = useState(true);
+  const [hasSubmited, setHasSubmited] = useState(false);
+
   const navigationInputRef = useRef() as MutableRefObject<HTMLInputElement>;
   
+  const { user } = useAuth();
   const { addToast } = useToast();
 
   const { 
@@ -49,12 +58,50 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
   } = useRegisters(); 
 
   useEffect(()=>{
-    storeAllRegisters(registers);
-    storeFilteredRegisters(registers);
+    async function load(){
+      try{
+        const data = await loadRegisters(user.email);
+
+        storeAllRegisters(data);
+        storeFilteredRegisters(data);
+
+        if(data.length === 0){
+          return addToast({ 
+            type: 'warning', 
+            title: 'Busca', 
+            message: 'Não foram encontrados dados.' 
+          });
+        }
+  
+        addToast({ 
+          type: 'success', 
+          title: 'Busca', 
+          message: `Foram encontrados ${data.length} dado(s).` 
+        });
+        
+      }catch(err){
+        if(err instanceof AppError){
+          const { title, message } = err;
+          addToast({ type: 'error', title, message });
+        }
+        else{
+          addToast({ 
+            type: 'error', 
+            title: 'Busca', 
+            message: 'Erro ao realizar operação.' 
+          });
+        }
+      }finally{ 
+        setIsSubmiting(false); 
+        setHasSubmited(true);
+      }
+    }
+
+    if(!hasSubmited) load();
   },[]);
 
   useEffect(()=>{
-    setTotalRegisters(filteredRegisters.length);
+    setFilteredRegisterCount(filteredRegisters.length);
   },[filteredRegisters]);
 
   useEffect(()=>{
@@ -89,7 +136,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
    if(e.key === 'Enter'){
     const input = navigationInputRef?.current
     let newPage = Number(input?.value);
-    const lastPage = Math.ceil(totalRegisters/rowsPerPage) - 1;
+    const lastPage = Math.ceil(filteredRegisterCount/rowsPerPage) - 1;
     
     if(! newPage) return;
     if(newPage < 1) newPage = 1;
@@ -104,6 +151,40 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
     storeRegisterToEdit(reg);
     openRegisterEditForm(true);
     changeFormMethod('PUT'); 
+  }
+  
+  async function handleRegisterDelete(ref: Register["ref"]){
+    const shouldReallyDelete = confirm("Deseja realmente excluir?");
+    if(!shouldReallyDelete) return;
+
+    try{
+      const deletedRegister = await deleteRegister(ref);
+
+      // storeAllRegisters(data);
+      // storeFilteredRegisters(data);
+
+      addToast({ 
+        type: 'success', 
+        title: 'Deleção', 
+        message: `Ativo ${deletedRegister.name} deletado com sucesso.` 
+      });
+      
+    }catch(err){
+      if(err instanceof AppError){
+        const { title, message } = err;
+        addToast({ type: 'error', title, message });
+      }
+      else{
+        addToast({ 
+          type: 'error', 
+          title: 'Deleção', 
+          message: 'Erro ao realizar operação.' 
+        });
+      }
+    }finally{ 
+      setIsSubmiting(false); 
+      setHasSubmited(true);
+    }
   }
 
   function getTrHeight(){
@@ -127,75 +208,12 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
     
     storeFilteredRegisters(sortedRegisters);
   }
-  
-  const registers:Register[] = [
-    {
-      id: '1',
-      asset_class: 'Ações',
-      name: 'MGLU3',
-      amount: 10,
-      price: 3,
-      total: 30,
-      date: '2021-12-12T03:06:28.000Z',
-      action_type: 'buy'
-    },
-    {
-      id: '2',
-      asset_class: 'Ações',
-      name: 'CASH3',
-      amount: 12,
-      price: 12000,
-      total: 144000,
-      date: '2022-12-12T03:06:28.000Z',
-      action_type: 'buy'
-    },
-    {
-      id: '3',
-      asset_class: 'Ações',
-      name: 'CASH3',
-      amount: 121,
-      price: 12000,
-      total: 144000,
-      date: '2022-12-12T03:06:28.000Z',
-      action_type: 'sell'
-    },
-    {
-      id: '4',
-      asset_class: 'Ações',
-      name: 'CASH3',
-      amount: 12,
-      price: 12000,
-      total: 144000,
-      date: '2022-12-12T03:06:28.000Z',
-      action_type: 'sell'
-    },
-    {
-      id: '5',
-      asset_class: 'Ações',
-      name: 'CASH3',
-      amount: 1122,
-      price: 12000,
-      total: 144000,
-      date: '2022-12-12T03:06:28.000Z',
-      action_type: 'buy'
-    },
-    {
-      id: '6',
-      asset_class: 'Ações',
-      name: 'CASH3',
-      amount: 12,
-      price: 12000,
-      total: 144000,
-      date: '2022-12-12T03:06:28.000Z',
-      action_type: 'buy'
-    },
-  ]
 
   return(
     <div className="table-container">
       <DefaultContent
         noData={filteredRegisters.length === 0}
-        loading={false}
+        loading={isSubmiting}
       />
 
       { filteredRegisters.length > 0 &&
@@ -235,7 +253,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
               .slice(currentPage*rowsPerPage, currentPage*rowsPerPage + rowsPerPage)
               .map((register)=>(
                 <tr 
-                  key={register.id} 
+                  key={register.ref.value.id} 
                   className="table-row"
                   style={getTrHeight()}
                 >
@@ -248,7 +266,7 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
                   <td>{getDateConverted(register.date, true)}</td>
                   <td className="buttons-container empty-row">
                     <FiTool onClick={()=>{handleRegisterEdit(register)}}/>
-                    <FiXSquare/>
+                    <FiXSquare onClick={()=>{handleRegisterDelete(register.ref)}}/>
                   </td>
               </tr>
             ))
@@ -268,15 +286,15 @@ export function Table({ moreRows, openRegisterEditForm, changeFormMethod }: Tabl
                   <span className="table-pages">
                   { (currentPage * rowsPerPage) + 1}
                     &nbsp;-&nbsp;
-                    { Math.min((currentPage * rowsPerPage) + rowsPerPage, totalRegisters) }
+                    { Math.min((currentPage * rowsPerPage) + rowsPerPage, filteredRegisterCount) }
                     &nbsp;de&nbsp;
-                    { totalRegisters } 
+                    { filteredRegisterCount } 
                   </span>
                   <div className="table-navigation-container">
                     <div className="table-navigation-buttons">
                       <Pagination
                         page={currentPage+1}
-                        total={totalRegisters}
+                        total={filteredRegisterCount}
                         rowsPerPage={rowsPerPage}
                         onNavigate={setCurrentPage}
                       />

@@ -6,9 +6,15 @@ import { formatCurrency, formatNumber, calculateTotal, getRawCurVal, getRawNumbe
 import { useToast } from "../../../contexts/toastContext";
 import { onSubmitInputProps } from "../../../interfaces/Submit";
 
-import '../styles.scss'
+import { BounceLoader } from "react-spinners";
 import { FiXCircle } from "react-icons/fi";
 import { Switch } from "../Switch";
+import { createRegister } from "../../../api/createRegister";
+import { useAuth } from "../../../contexts/authContext";
+import { Register } from "../../../interfaces/Register";
+import { AppError } from "../../../errors/AppError";
+
+import '../styles.scss';
 
 interface FormProps{
   closeModalByForm: Dispatch<SetStateAction<boolean>>;
@@ -19,34 +25,57 @@ export function Form({ closeModalByForm }: FormProps){
   const [amountInput, setAmountInput] = useState('');
 
   const addFormRef = useRef() as MutableRefObject<HTMLFormElement>;
+  
 
+  const { user } = useAuth(); 
   const { addToast } = useToast(); 
 
-  function handleAddRegister(e: FormEvent){
+  async function handleAddRegister(e: FormEvent){
     e.preventDefault();
     const originalElements = Array.from([addFormRef.current.elements][0]);
     const elements = originalElements
       .filter(item => item.tagName === 'INPUT') as unknown as onSubmitInputProps[];
     
-    const addFormData = new FormData();
+    const newRegister = {} as Omit<Register,'ref>'>;
 
     elements.map(i=>{
-      switch(i.name){
-        case 'price': return addFormData.append(i.name, getRawCurVal(i.value));
-        case 'amount': return addFormData.append(i.name, getRawNumberVal(i.value));
-        case 'total': return addFormData.append(i.name, getRawCurVal(i.value));
+      switch(i.id){
+        case 'price': return newRegister.price =  +getRawCurVal(i.value);
+        case 'amount': return newRegister.amount = +getRawNumberVal(i.value);
+        case 'total': return newRegister.total = +getRawCurVal(i.value);
         case 'date':
           const [y,m,d] = (i.value.split('-')).map(i=>Number(i));
-          return new Date(y,m-1,d).toISOString();
-        default: return addFormData.append(i.name, i.value);
+          return newRegister.date = new Date(y,m-1,d).toISOString();
+        default: return newRegister[i.id] = i.value;
       }
     });
 
-    addToast({ 
-      type: 'success', 
-      title: 'Lançamento', 
-      message: 'Cadastrado com sucesso!' 
-    });
+    try{
+
+      const addedRegister = await createRegister(user.email, newRegister);
+      addToast({ 
+        type: 'success', 
+        title: 'Lançamento', 
+        message: `Ativo ${newRegister.name} cadastrado com sucesso!` 
+      });
+      closeModalByForm(false);
+
+    }catch(err){
+      if(err instanceof AppError){
+        const { title, message } = err;
+        addToast({ type: 'error', title, message });
+      }
+      else{
+        addToast({ 
+          type: 'error', 
+          title: 'Cadastro', 
+          message: 'Erro ao realizar operação.' 
+        });
+      }
+    }finally{ 
+      // setIsSubmiting(false); 
+      // setHasSubmited(true);
+    }
   }
 
   function handlePriceChange(e: ChangeEvent<HTMLInputElement>){
@@ -71,12 +100,14 @@ export function Form({ closeModalByForm }: FormProps){
     <form className="form" ref={addFormRef} onSubmit={handleAddRegister}>
       <fieldset>
         <Input
-          name='class'
+          name='asset_class'
+          id="asset_class"
           label='Classe do ativo'
           required
         />
         <Input
           name='name'
+          id='name'
           label='Nome do ativo'
           required
         />
@@ -85,6 +116,7 @@ export function Form({ closeModalByForm }: FormProps){
       <fieldset>
         <Input
           name='amount'
+          id='amount'
           label='Quantidade'
           required
           value={amountInput}
@@ -92,6 +124,7 @@ export function Form({ closeModalByForm }: FormProps){
         />
         <Input
           name='price'
+          id='price'
           label='Preço unitário'
           required
           value={priceInput}
@@ -102,12 +135,14 @@ export function Form({ closeModalByForm }: FormProps){
       <fieldset>
         <Input
           name='total'
+          id='total'
           label='Total'
           readOnly
           value={calculateTotal(priceInput, amountInput)}
         />
         <Input
           name='date'
+          id='date'
           label='Data'
           required
           type="date"
@@ -117,16 +152,24 @@ export function Form({ closeModalByForm }: FormProps){
       <fieldset>
         <Switch
           name="action_type"
+          id="action_type"
           label="Tipo: "
           values={['Compra', 'Venda']}
           keyValues={['buy', 'sell']}
         />
-        <div>
+        <div className="buttons-container">
           <button 
             type="submit" 
             className="submit"
+            disabled={false}
           >
-            Salvar
+            { true
+              ? <BounceLoader
+                  color="#eef1ff"
+                  size={20}
+                />
+              : 'Salvar'
+            }
           </button>
           <button 
             type="reset" 
