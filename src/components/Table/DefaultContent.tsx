@@ -11,7 +11,7 @@ interface DefaultContentProps{
 export function DefaultContent({ noData, loading }: DefaultContentProps){
   if(noData && !loading){
     return(
-      <div className="default-contentar-container">
+      <div className="default-content-container">
         <h1>Não foram encontrados dados</h1>
         <FiAlertTriangle/>
       </div>
@@ -20,7 +20,7 @@ export function DefaultContent({ noData, loading }: DefaultContentProps){
 
   if(noData && loading){
     return(
-      <div className="default-contentar-container">
+      <div className="default-content-container">
         <HashLoader
           color="#eef1ff"
           size={80}

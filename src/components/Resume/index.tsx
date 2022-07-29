@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import { useQuery } from 'react-query';
 import { loadRegisters } from '../../api/loadRegisters';
+import { useQuery } from 'react-query';
 import { useAuth } from '../../contexts/authContext';
+import { useRegisters } from '../../contexts/registersContext';
 
 import { FiChevronDown, FiX } from 'react-icons/fi';
 import { Card } from './Card';
@@ -16,8 +17,10 @@ interface ResumeProps{
 
 export function Resume({ isResumeCLosed, onClose }: ResumeProps){
   const { user } = useAuth();
+
+  const { filteredRegisters: data } = useRegisters();
   
-  const { data, isLoading, error } = useQuery(
+  const { isLoading, error } = useQuery(
     'loadRegisters', 
     async () => await loadRegisters(user?.email), 
     { staleTime: Infinity }

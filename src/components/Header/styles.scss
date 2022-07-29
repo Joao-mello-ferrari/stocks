@@ -1,7 +1,7 @@
 @import '../../styles/Variables.scss';
 
 .header{
-  height: 13vh;
+  height: 10vh;
   max-height: 230px;
   width: calc(100vw - 2rem);
   max-width: 1880px;
@@ -28,7 +28,6 @@
   .logo-text-container{
     display: flex;
     flex-direction: column;
-    // margin-top: -0.8rem;
 
     .logo-text{
       font-size: 2.4rem;
