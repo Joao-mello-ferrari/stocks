@@ -71,7 +71,7 @@ export function Login(){
         </div>
       </section>
       <section className="mainImageContainer">
-        <img src="/src/assets/back.png" alt="Metaphoric people talking about stocks" />
+        <img src="/assets/back.png" alt="Metaphoric people talking about stocks" />
       </section>
     </main>
   )
