@@ -8,7 +8,9 @@ the amount of each stock was under my possession. I came across this idea, and i
 > To store data, I used the faunadb service [Fauna DB](https://fauna.com/).
 
 # Check the project for yourself!
-**Project website** > https://stocks.joaomellof.com/
+> **Project website** - https://stocks.joaomellof.com </br>
+> **Youtube Video** - https://youtu.be/Peg5Mx_zU1I </br>
+
 ![stocks home screen. Header on top, with user info and logout button. Filters and table right below, showing stocks](https://user-images.githubusercontent.com/67838782/181861838-e968fad6-c5a1-4320-8274-7478240794bd.png "stocks preview") 
 
 # How can i download and run the project?
