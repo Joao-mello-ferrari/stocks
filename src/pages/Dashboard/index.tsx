@@ -33,15 +33,15 @@ export function Dashboard(){
         method={formMethod}
       />
       <Header/>
-      <Resume onClose={setIsResumeClosed} isResumeCLosed={isResumeClosed}/>
-      <Filters 
-        customStyles={ isResumeClosed ? { marginTop: '1rem'} : {}}
-        changeFormMethod={setFormMethod}
-      />
-      <Table 
-        moreRows={isResumeClosed} 
-        changeFormMethod={setFormMethod}
-      />
+      <div className="secondary-container">
+
+        <Resume onClose={setIsResumeClosed} isResumeCLosed={isResumeClosed}/>
+        <Filters changeFormMethod={setFormMethod} />
+        <Table 
+          moreRows={isResumeClosed} 
+          changeFormMethod={setFormMethod}
+        />
+      </div>
     </div>
   )
 }

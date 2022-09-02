@@ -1,6 +1,6 @@
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 
-import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useRegisters } from '../../contexts/registersContext';
 import { useToast } from '../../contexts/toastContext';
 import { useAuth } from '../../contexts/authContext';
@@ -128,24 +128,27 @@ export function Table({ moreRows, changeFormMethod }: TableProps){
     else if(window.innerWidth > 1480 && !moreRows) newRowsNum = 6;
     else if(moreRows) newRowsNum = 6;
     else newRowsNum = 4;
-    setRowsPerPage(newRowsNum);
+
+    if(moreRows){
+      const delayRowsPerpageChangeForEmptyRows = setTimeout(()=>{
+        setEmptyRows_RowsPerPage(newRowsNum);
+        setRowsPerPage(newRowsNum);
+      },600);
+  
+      return ()=>{
+        clearTimeout(delayRowsPerpageChangeForEmptyRows)
+      }
+    }
+    else{
+      setRowsPerPage(newRowsNum);
+      setEmptyRows_RowsPerPage(newRowsNum);
+    } 
 
     if(newRowsNum > rowsPerPage){
       const baseCurrentPage = Math.floor(filteredRegisters.length/newRowsNum);
       const newCurrentPage = Math.max(0,baseCurrentPage-1);
       setCurrentPage(newCurrentPage);
     } 
-
-    if(moreRows){
-      const delayRowsPerpageChangeForEmptyRows = setTimeout(()=>{
-        setEmptyRows_RowsPerPage(newRowsNum);
-      },380);
-  
-      return ()=>{
-        clearTimeout(delayRowsPerpageChangeForEmptyRows)
-      }
-    }
-    else setEmptyRows_RowsPerPage(newRowsNum);
 
   },[moreRows]);
   
@@ -270,7 +273,7 @@ export function Table({ moreRows, changeFormMethod }: TableProps){
             />
           </tbody>
           <tfoot>
-            <tr>
+            <tr className="table-row" style={getTrHeight()}>
               <td colSpan={7}>
                 <div className="table-footer-container">
                   <span className="table-pages">

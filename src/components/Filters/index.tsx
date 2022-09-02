@@ -19,7 +19,7 @@ import './styles.scss'
 
 const baseFilterTypeOptions: FilterTypeOption[] = [
   { value: 'name', text: 'Nome do ativo' },
-  { value: 'date', text: 'Data da compra / venda' },
+  { value: 'date', text: 'Data' },
   { value: 'price', text: 'Valor' },
   { value: 'amount', text: 'Quantidade' },
   { value: 'asset_class', text: 'Classificação' },
@@ -31,10 +31,7 @@ const operands: Operand[] = [
   { value: 1, icon: '>' }
 ]
 
-export function Filters({ 
-  customStyles, 
-  changeFormMethod 
-}: FiltersProps){
+export function Filters({  changeFormMethod }: FiltersProps){
     const { user } = useAuth();
 
     const { data: allRegisters } = useQuery(
@@ -197,7 +194,7 @@ export function Filters({
   }
 
   return(
-    <div className="filters-container" style={customStyles}>
+    <div className="filters-container">
       <label htmlFor="input" className="label" ref={filterInputRef}>
         <input 
           className="input" 
