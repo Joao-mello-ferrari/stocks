@@ -6,16 +6,15 @@
   width: 100vw;
   max-width: 1880px;
 
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
   padding: 0.4rem 1rem;
 
   background: $header;
-
 }
 
 .logo{
-  margin-left: 10%;
+  margin-left: 5rem;
   display: flex;
   align-items: center;
 

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRegisters } from "../../contexts/registersContext";
 
 import { Header } from "../../components/Header";
-import { Resume } from "../../components/Resume";
+import { Amounts } from "../../components/Amounts";
 import { Filters } from "../../components/Filters";
 import { Table } from "../../components/Table";
 import { RegisterFormModal } from "../../components/RegisterModal";
@@ -14,7 +14,7 @@ import './styles.scss';
 export function Dashboard(){
   const { isRegisterModalOpen } = useRegisters();
 
-  const [isResumeClosed, setIsResumeClosed] = useState(false);
+  const [isAmountsClosed, setIsAmountsClosed] = useState(false);
   const [formMethod, setFormMethod] = useState<'POST' | 'PUT'>('POST');
   
   if(window.innerWidth < 768){
@@ -35,10 +35,10 @@ export function Dashboard(){
       <Header/>
       <div className="secondary-container">
 
-        <Resume onClose={setIsResumeClosed} isResumeCLosed={isResumeClosed}/>
+        <Amounts onClose={setIsAmountsClosed} isAmountsCLosed={isAmountsClosed}/>
         <Filters changeFormMethod={setFormMethod} />
         <Table 
-          moreRows={isResumeClosed} 
+          moreRows={isAmountsClosed} 
           changeFormMethod={setFormMethod}
         />
       </div>

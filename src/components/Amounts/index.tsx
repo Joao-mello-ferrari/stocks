@@ -10,12 +10,12 @@ import { Card } from './Card';
 
 import './styles.scss';
 
-interface ResumeProps{
-  isResumeCLosed: boolean;
+interface AmountsProps{
+  isAmountsCLosed: boolean;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function Resume({ isResumeCLosed, onClose }: ResumeProps){
+export function Amounts({ isAmountsCLosed, onClose }: AmountsProps){
   const { user } = useAuth();
 
   const { filteredRegisters: data } = useRegisters();
@@ -53,18 +53,18 @@ export function Resume({ isResumeCLosed, onClose }: ResumeProps){
   },[data]);
   
   return(
-    <section className="resume-container">
+    <section className="amounts-container">
       <div 
         className={
-          `resume-itens-container
-          ${ isResumeCLosed && 'resume-itens-container-tighten' }
+          `amounts-itens-container
+          ${ isAmountsCLosed && 'amounts-itens-container-tighten' }
         `}
       >
         <Card
           type='buy'
           loading={isLoading}
           error={error !== null}
-          translate={isResumeCLosed}
+          translate={isAmountsCLosed}
           value={buy}
         />
 
@@ -72,7 +72,7 @@ export function Resume({ isResumeCLosed, onClose }: ResumeProps){
           type='sell'
           loading={isLoading}
           error={error !== null}
-          translate={isResumeCLosed}
+          translate={isAmountsCLosed}
           value={sell}
         />
 
@@ -80,12 +80,12 @@ export function Resume({ isResumeCLosed, onClose }: ResumeProps){
           type='available'
           loading={isLoading}
           error={error !== null}
-          translate={isResumeCLosed}
+          translate={isAmountsCLosed}
           value={available}
         />
         
 
-        { isResumeCLosed
+        { isAmountsCLosed
           ? <FiChevronDown className="close-icon" onClick={()=>{ onClose(false); }}/>
           : <FiX className="close-icon" onClick={()=>{ onClose(true); }}/>
         }

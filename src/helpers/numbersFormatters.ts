@@ -1,4 +1,37 @@
-export function formatCurrency(value: string, shouldNotDivide=true): string{
+export function formatCurrencyToDisplay(value: string){
+  let valueToFormat = value;
+  let negativeFlag = false;
+  if(value.includes('-')){
+    valueToFormat = value.slice(1);
+    negativeFlag = true;
+  }
+
+  if(value.includes('.')){
+    const decimalPlaces = value.split('.')[1].length;
+    if(decimalPlaces === 1) valueToFormat += '0'; 
+  }
+  else valueToFormat += '00'; 
+  
+  valueToFormat = valueToFormat.replaceAll(',','');
+  valueToFormat = valueToFormat.replaceAll('.','');
+  
+  let decimal='', integer='';
+  for(let i=0; i < valueToFormat.length; i++){
+    if(i < valueToFormat.length-2) integer += valueToFormat[i];
+    else if(i >= valueToFormat.length-2) decimal += valueToFormat[i];
+  }
+  valueToFormat = integer + '.' + decimal;
+
+  if(!(/^[0-9].+$/.test(valueToFormat))) valueToFormat = '';
+  
+  const formatter = Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'})
+  valueToFormat = formatter.format(Number(valueToFormat));
+  
+  if(negativeFlag) return '- ' + valueToFormat;
+  return valueToFormat;
+}
+
+export function formatCurrencyInput(value: string): string{
   let valueToFormat = value;
   let negativeFlag = false;
   if(value.includes('-')){
@@ -12,7 +45,6 @@ export function formatCurrency(value: string, shouldNotDivide=true): string{
     
     valueToFormat = valueToFormat.replaceAll(',','');
     valueToFormat = valueToFormat.replaceAll('.','');
-    if(!(/^[0-9]+$/.test(valueToFormat))) valueToFormat = valueToFormat.slice(0,valueToFormat.length-1);
     
     let decimal='', integer='';
     for(let i=0; i < valueToFormat.length; i++){
@@ -21,7 +53,7 @@ export function formatCurrency(value: string, shouldNotDivide=true): string{
     }
     valueToFormat = integer + '.' + decimal;
   }
-  else if(!shouldNotDivide) valueToFormat = String(Number(valueToFormat)/100);
+  else valueToFormat = String(Number(valueToFormat)/100);
   
   if(!(/^[0-9].+$/.test(valueToFormat))) valueToFormat = '';
   

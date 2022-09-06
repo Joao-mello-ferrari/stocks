@@ -5,7 +5,7 @@ import { useRegisters } from '../../contexts/registersContext';
 import { useToast } from '../../contexts/toastContext';
 import { useAuth } from '../../contexts/authContext';
 import { loadRegisters } from '../../api/loadRegisters';
-import { compareNumbers, formatCurrency, formatNumber } from '../../helpers/numbersFormatters';
+import { compareNumbers, formatCurrencyToDisplay, formatNumber } from '../../helpers/numbersFormatters';
 import { compareDates, getDateConverted } from '../../helpers/dateConversion';
 
 import { Pagination } from './Pagination';
@@ -254,8 +254,8 @@ export function Table({ moreRows, changeFormMethod }: TableProps){
                   <td>{register.name}</td>
                   <ActionTypeRow type={register.action_type} />
                   <td>{formatNumber(String(register.amount))}</td>
-                  <td>{formatCurrency(String(register.price))}</td>
-                  <td>{formatCurrency(String(register.total))}</td>
+                  <td>{formatCurrencyToDisplay(String(register.price))}</td>
+                  <td>{formatCurrencyToDisplay(String(register.total))}</td>
                   <td>{getDateConverted(register.date, true)}</td>
                   <td className="buttons-container empty-row">
                     <FiTool onClick={()=>{handleEditRegister(register)}}/>

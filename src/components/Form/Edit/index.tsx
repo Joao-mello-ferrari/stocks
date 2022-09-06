@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { updateRegister } from "../../../api/updateRegister";
 import { useToast } from "../../../contexts/toastContext";
 import { useRegisters } from "../../../contexts/registersContext";
-import { calculateTotal, formatCurrency, formatNumber, getRawCurVal, getRawNumberVal } from "../../../helpers/numbersFormatters";
+import { calculateTotal, formatCurrencyInput, formatNumber, getRawCurVal, getRawNumberVal } from "../../../helpers/numbersFormatters";
 import { getDateConverted } from "../../../helpers/dateConversion";
 
 import { Input } from "./Input";
@@ -53,7 +53,7 @@ export function Form(){
 
   const { registerToEdit: r, storeModalState } = useRegisters();
   
-  const [priceInput, setPriceInput] = useState(formatCurrency(String(r?.price)));
+  const [priceInput, setPriceInput] = useState(formatCurrencyInput(String(r?.price)));
   const [amountInput, setAmountInput] = useState(formatNumber(String(r.amount)));
   const [switchVal, setSwitchVal] = useState(r.action_type);
   
@@ -102,8 +102,8 @@ export function Form(){
     function getDefaultValues(key: onSubmitInputProps['id']): string{
       switch(key){
         case 'amount': return formatNumber(String(r?.amount));
-        case 'price': return formatCurrency(String(r?.price));
-        case 'total': return formatCurrency(String(r?.amount * r?.price));
+        case 'price': return formatCurrencyInput(String(r?.price));
+        case 'total': return formatCurrencyInput(String(r?.amount * r?.price));
         case 'date': return getDateConverted(r?.date);
         default: return r[key];
       }
@@ -112,7 +112,7 @@ export function Form(){
 
   function handlePriceChange(e: ChangeEvent<HTMLInputElement>){
     const price = e.target.value;
-    const newPrice = formatCurrency(price);
+    const newPrice = formatCurrencyInput(price);
     setPriceInput(newPrice);
   }
 
@@ -130,7 +130,7 @@ export function Form(){
   
   function getPrice(){
     const mainValue = priceInput;
-    const defaultValue = formatCurrency(String(r?.price));
+    const defaultValue = formatCurrencyInput(String(r?.price));
     return mainValue || defaultValue;
   }
 

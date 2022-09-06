@@ -1,7 +1,9 @@
 @import '../../../styles/Variables.scss';
 
 .navigation{
-  width: 100%;
+  width: 30rem;
+  height: 3.6rem;
+  margin: auto;
 
   display: flex;
   justify-content: center;
@@ -11,11 +13,26 @@
     font-weight: 500;
     font-size: 1.3rem;
     color: $text;
+    position: relative;
 
     transition: color 0.3s;
 
     & + a{ margin-left: 2rem; }
     &.active{ color:  $theme; }
-    &:hover{ color: $theme-light; }
+
+    &:not(.active)::after{
+      content: '';
+      position: absolute;
+      left: 0rem;
+      bottom: -0.2rem;
+      width: 0;
+      height: 0.15rem;
+      border-radius: 0.1rem;
+      background: $theme;
+
+      transition: width 0.2s;
+    }
+
+    &:not(.active):hover::after{ width: 100%; }
   }
 }

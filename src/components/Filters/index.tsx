@@ -9,7 +9,7 @@ import { useToast } from '../../contexts/toastContext';
 import { useAuth  } from '../../contexts/authContext';
 
 import { compareDates, isoDateFromInput } from '../../helpers/dateConversion';
-import { compareNumbers, formatCurrency, formatNumber, getRawCurVal, getRawNumberVal } from '../../helpers/numbersFormatters';
+import { compareNumbers, formatCurrencyInput, formatNumber, getRawCurVal, getRawNumberVal } from '../../helpers/numbersFormatters';
 import { utf8ToAscii } from '../../helpers/textFormatter';
 
 import { FilterTypeOption, CustomClickEvent, CustomClickEventOperand,
@@ -18,11 +18,11 @@ import { FilterTypeOption, CustomClickEvent, CustomClickEventOperand,
 import './styles.scss'
 
 const baseFilterTypeOptions: FilterTypeOption[] = [
-  { value: 'name', text: 'Nome do ativo' },
-  { value: 'date', text: 'Data' },
-  { value: 'price', text: 'Valor' },
-  { value: 'amount', text: 'Quantidade' },
   { value: 'asset_class', text: 'Classificação' },
+  { value: 'name', text: 'Nome do ativo' },
+  { value: 'amount', text: 'Quantidade' },
+  { value: 'price', text: 'Valor' },
+  { value: 'date', text: 'Data' },
 ];
 
 const operands: Operand[] = [
@@ -41,9 +41,9 @@ export function Filters({  changeFormMethod }: FiltersProps){
   );
 
   const [filterValue, setFilterValue] = useState('');
-  const [filterTypeValue, setFilterTypeValue] = useState('')
+  const [filterTypeValue, setFilterTypeValue] = useState('Nome do ativo');
   const [filterTypeOptions, setFilterTypeOptions] = useState<FilterTypeOption[]>(baseFilterTypeOptions)
-  const [filterTypeKey, setFilterTypeKey] = useState<'asset_class' | 'name' | 'amount' | 'price' | 'date' | ''>('');
+  const [filterTypeKey, setFilterTypeKey] = useState<'asset_class' | 'name' | 'amount' | 'price' | 'date' | ''>('name');
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
   const [operand, setOperand] = useState(0);
@@ -83,7 +83,7 @@ export function Filters({  changeFormMethod }: FiltersProps){
   },[filterTypeKey]);
 
   function handleFilterTypeValueChange(e: React.ChangeEvent<HTMLInputElement>){
-    const newFilterTypeValue = e.target.value
+    const newFilterTypeValue = e.target.value;
     setFilterTypeValue(newFilterTypeValue);
     
     const filteredTypeOptions = baseFilterTypeOptions
@@ -99,6 +99,7 @@ export function Filters({  changeFormMethod }: FiltersProps){
     setFilterTypeKey(e.target.id);
     setFilterTypeValue(e.target.textContent);
     setFilterValue('');
+    storeFilteredRegisters(allRegisters ? allRegisters : []);
     setTimeout(()=>{
       filterInputRef?.current?.focus()
       setIsDropDownOpen(false)
@@ -154,7 +155,7 @@ export function Filters({  changeFormMethod }: FiltersProps){
           auxPriceVal = searchVal.slice(0,searchVal.length-1);
         }
         basedSearchVal = getRawCurVal(auxPriceVal);
-        newInputValue = formatCurrency(auxPriceVal, false);
+        newInputValue = formatCurrencyInput(auxPriceVal);
         break;
       case 'amount':
         let auxAmountVal = searchVal;
@@ -217,25 +218,26 @@ export function Filters({  changeFormMethod }: FiltersProps){
           onFocus={()=>{ setIsDropDownOpen(true); }}
           placeholder='Escolha o filtro'
         />
-        <FiChevronDown/>
-        <ul 
-          className="input-dropdown" 
-          style={{ visibility: isDropDownOpen ? 'visible': 'hidden', 
-            top: isDropDownOpen ? '2.1rem' : '1rem'
-          }}
-        >
+          <FiChevronDown/>
+          <ul 
+            className="input-dropdown" 
+            style={{ visibility: isDropDownOpen ? 'visible': 'hidden', 
+              top: isDropDownOpen ? '2.1rem' : '1rem'
+            }}
+          >
           { filterTypeOptions.map((option)=>{
-            return(
-              <li 
-                key={option.value} 
-                value={option.value}
-                id={option.value}
-                onClick={handleSelectFilter}
-              >
-                {option.text}
-              </li>
-            )
-          }) }
+              return(
+                <li 
+                  key={option.value} 
+                  value={option.value}
+                  id={option.value}
+                  onClick={handleSelectFilter}
+                >
+                  {option.text}
+                </li>
+              )
+            }) 
+          }
         </ul>
       </label>
       
