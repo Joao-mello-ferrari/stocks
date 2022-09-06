@@ -1,10 +1,61 @@
+@import '../../styles/Variables.scss';
+
 .container{
   width: 100vw;
   max-width: 1920px;
   height: 100vh;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-
+  
   margin: 0 auto;
 }
+
+.secondary-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  max-width: 1920px;
+  height: 88vh;
+  overflow: auto;
+
+  &::-webkit-scrollbar{
+    width: 1.6rem;
+  }
+
+  &::-webkit-scrollbar-track{
+    border: solid 0.65rem transparent;
+    border-radius: 1rem;
+    box-shadow: inset 0 0 2rem #AAAAAA;
+  }
+
+  &::-webkit-scrollbar-thumb{
+    border: solid 0.65rem transparent;
+    border-radius: 1rem;
+    box-shadow: inset 0 0 4rem #FFFFFF;
+  }
+
+}
+
+.stocks{
+  height: 88vh;
+  width: calc(100vw - 88vh);
+  padding: 2rem;
+
+  .stocks-list{
+    
+    font-size: 0;
+    opacity: 0;
+    transition: opacity .15s,
+                font-size  .25s;
+    
+  
+    &.open{
+      font-size: 1rem;
+      opacity: 1;
+    }
+  }
+  
+}
+
