@@ -27,13 +27,13 @@ export function Dashboard(){
   }
 
   return(
-    <div className="container">
+    <div className="dashboard-container">
       <RegisterFormModal 
         open={isRegisterModalOpen} 
         method={formMethod}
       />
       <Header/>
-      <div className="secondary-container">
+      <div className="secondary-dashboard-container">
 
         <Amounts onClose={setIsAmountsClosed} isAmountsCLosed={isAmountsClosed}/>
         <Filters changeFormMethod={setFormMethod} />
