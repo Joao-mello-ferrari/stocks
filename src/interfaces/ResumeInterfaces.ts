@@ -5,25 +5,25 @@ export interface IMappedData{
     name: 'Ações',
     registers: Register[],
     total: number,
-    perc: number,
+    perc: string,
   },
   'b': {
     name: 'Real State',
     registers: Register[],
     total: number,
-    perc: number,
+    perc: string,
   },
   'c': {
     name: 'Cash',
     registers: Register[],
     total: number,
-    perc: number,
+    perc: string,
   },
   'd': {
     name: 'Ativos Int',
     registers: Register[],
     total: number,
-    perc: number,
+    perc: string,
   },
 }
 

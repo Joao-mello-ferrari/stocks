@@ -1,4 +1,5 @@
-export function formatCurrencyToDisplay(value: string){
+export function formatCurrencyToDisplay(value: string | number){
+  value = String(value);
   let valueToFormat = value;
   let negativeFlag = false;
   if(value.includes('-')){
