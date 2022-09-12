@@ -1,4 +1,4 @@
-.container{
+.dashboard-container{
   width: 100vw;
   max-width: 1920px;
   height: 100vh;
@@ -7,4 +7,10 @@
   flex-direction: column;
 
   margin: 0 auto;
+}
+
+.secondary-dashboard-container{
+  display: flex;
+  flex-direction: column;
+  height: 88vh;
 }

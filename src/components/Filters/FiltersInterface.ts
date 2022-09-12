@@ -1,5 +1,4 @@
 export interface FiltersProps{
-  customStyles: {},
   changeFormMethod: (method: 'POST' | 'PUT') => void;
 }
 

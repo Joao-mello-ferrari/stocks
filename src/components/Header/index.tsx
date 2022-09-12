@@ -1,7 +1,8 @@
-import {  useGoogleLogout } from "react-google-login";
+import { useGoogleLogout } from "react-google-login";
 import { useAuth } from '../../contexts/authContext';
 
 import { FiTrendingUp, FiLogOut } from 'react-icons/fi';
+import { Navigation } from "./Navigation";
 
 import './styles.scss';
 
@@ -11,7 +12,8 @@ export function Header(){
   const { signOut } = useGoogleLogout({ 
     clientId: import.meta.env.VITE_APP_GAPI_CLIENT_ID,
     onLogoutSuccess() { logout() },
-   });
+  });
+
 
   return(
     <header className="header">
@@ -22,6 +24,9 @@ export function Header(){
           {/* <span className="logo-slogan">HANDLE YOUR MONEY</span> */}
         </div>
       </div>
+      
+      { window.innerWidth > 768 && <Navigation/> }
+      
       <div className="user-container">
         <div className="user-info">
           <span>{user.name}</span>

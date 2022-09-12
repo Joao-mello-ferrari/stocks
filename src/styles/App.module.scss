@@ -1,14 +1,16 @@
 @import './Variables.scss'; 
 
-body, html{
+*{
   border: 0;
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+body, html{
   background: $bg;
   color: $text;
   font-family: Roboto, sans-serif;
-
-  box-sizing: border-box;
 
   a{
     text-decoration: none;
@@ -21,7 +23,8 @@ body, html{
   }
 
   @media(min-width: 1600px){
-    font-size: 125%;
+    font-size: 130%;
   }
+
 }
 

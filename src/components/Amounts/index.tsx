@@ -10,12 +10,12 @@ import { Card } from './Card';
 
 import './styles.scss';
 
-interface ResumeProps{
-  isResumeCLosed: boolean;
+interface AmountsProps{
+  isAmountsCLosed: boolean;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function Resume({ isResumeCLosed, onClose }: ResumeProps){
+export function Amounts({ isAmountsCLosed, onClose }: AmountsProps){
   const { user } = useAuth();
 
   const { filteredRegisters: data } = useRegisters();
@@ -34,17 +34,18 @@ export function Resume({ isResumeCLosed, onClose }: ResumeProps){
     if(data !== undefined){
       const values = data.reduce((total, reg)=>{
         if(reg.action_type === 'buy'){
-          const newBuy = total.buy + (reg.price*reg.amount);
-          const newAvailable = total.available + (reg.price*reg.amount);
+          const newBuy = total.buy + Number((reg.price*reg.amount).toFixed());
+          const newAvailable = total.available + Number((reg.price*reg.amount).toFixed());
           return { ...total, buy: newBuy, available: newAvailable };
         }
         else if(reg.action_type === 'sell'){
-          const newSell = total.sell + (reg.price*reg.amount);
-          const newAvailable = total.available - (reg.price*reg.amount);
+          const newSell = total.sell + Number((reg.price*reg.amount).toFixed(2));
+          const newAvailable = total.available - Number((reg.price*reg.amount).toFixed(2));
           return { ...total, sell: newSell, available: newAvailable };
         }
         return total;
       },{ buy: 0, sell: 0, available: 0})
+
       setBuy(values.buy);
       setSell(values.sell);
       setAvailable(values.available);
@@ -52,21 +53,18 @@ export function Resume({ isResumeCLosed, onClose }: ResumeProps){
   },[data]);
   
   return(
-    <section className={
-      `resume-container
-      ${ isResumeCLosed && 'resume-container-tighten' }`
-    }>
+    <section className="amounts-container">
       <div 
         className={
-          `resume-itens-container
-          ${ isResumeCLosed && 'resume-itens-container-tighten' }
+          `amounts-itens-container
+          ${ isAmountsCLosed && 'amounts-itens-container-tighten' }
         `}
       >
         <Card
           type='buy'
           loading={isLoading}
           error={error !== null}
-          translate={isResumeCLosed}
+          translate={isAmountsCLosed}
           value={buy}
         />
 
@@ -74,7 +72,7 @@ export function Resume({ isResumeCLosed, onClose }: ResumeProps){
           type='sell'
           loading={isLoading}
           error={error !== null}
-          translate={isResumeCLosed}
+          translate={isAmountsCLosed}
           value={sell}
         />
 
@@ -82,12 +80,12 @@ export function Resume({ isResumeCLosed, onClose }: ResumeProps){
           type='available'
           loading={isLoading}
           error={error !== null}
-          translate={isResumeCLosed}
+          translate={isAmountsCLosed}
           value={available}
         />
         
 
-        { isResumeCLosed
+        { isAmountsCLosed
           ? <FiChevronDown className="close-icon" onClick={()=>{ onClose(false); }}/>
           : <FiX className="close-icon" onClick={()=>{ onClose(true); }}/>
         }

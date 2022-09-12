@@ -9,9 +9,11 @@ interface RegistersContext{
   filteredRegisters: Register[];
   registerToEdit: Register;
   isRegisterModalOpen: boolean;
+  // mappedRegisters: [];
   storeFilteredRegisters: (registers: Register[]) => void;
   storeRegisterToEdit: (register: Register) => void;
   storeModalState: (state: boolean) => void;
+  // storeMappedRegisters: (registers: []) => void;
 }
 
 interface ResgistersContextProviderProps{
@@ -32,7 +34,7 @@ export function RegistersContenxtProvider({ children }: ResgistersContextProvide
       return JSON.parse(bytes.toString(crypto.enc.Utf8));
     }
     return {} as Register;
-  })
+  });
 
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState<boolean>(()=>{
     const cookies = parseCookies();
@@ -43,7 +45,18 @@ export function RegistersContenxtProvider({ children }: ResgistersContextProvide
       return JSON.parse(bytes.toString(crypto.enc.Utf8)).state;
     }
     return false;
-  })
+  });
+
+  // const [mappedRegisters, setMappedRegisters] = useState<[]>(()=>{
+  //   const cookies = parseCookies();
+  //   const registers = cookies['@stocks:mapped_registers'];
+
+  //   if (!!registers){
+  //     const bytes = crypto.AES.decrypt(registers, import.meta.env.VITE_APP_ENCRYPT_SECRET);
+  //     return JSON.parse(bytes.toString(crypto.enc.Utf8));
+  //   }
+  //   return [];
+  // });
 
   const storeFilteredRegisters = useCallback((registers: Register[])=>{
     setFilteredRegisters(registers);
@@ -73,15 +86,29 @@ export function RegistersContenxtProvider({ children }: ResgistersContextProvide
     setRegisterToEdit(register);
   },[]);
 
+  // const storeMappedRegisters = useCallback((registers: [])=>{
+  //   const encryptedRegisters = crypto.AES.encrypt(
+  //     JSON.stringify(registers), 
+  //       import.meta.env.VITE_APP_ENCRYPT_SECRET
+  //   ).toString();
+
+  //   setCookie(null, '@stocks:mapped_registers', encryptedRegisters, {
+  //     maxAge: 7 * 24 * 60 * 60
+  //   })
+  //   setMappedRegisters(registers);
+  // },[]);
+
   return(
     <RegistersContext.Provider 
       value={{ 
         filteredRegisters,
         registerToEdit,
         isRegisterModalOpen, 
+        // mappedRegisters,
         storeFilteredRegisters, 
         storeRegisterToEdit,
-        storeModalState
+        storeModalState,
+        // storeMappedRegisters
     }}>
       { children }
     </RegistersContext.Provider>

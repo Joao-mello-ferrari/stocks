@@ -23,22 +23,26 @@
   .table-row{
     position: relative;
     &:hover{
-      .buttons-container{ opacity: 1; }
+      .buttons-container{ 
+        opacity: 1; 
+        border: 2px solid $theme;
+      }
     }
 
     .buttons-container{
       position: absolute;
       display: flex;
+      align-items: center;
+      justify-content: center;
       opacity: 0;
-      height: 1.2rem;
+      height: 2rem;
       background: $bg-light;
-      top: calc(50% - 0.9rem);
+      top: calc(50% - 1rem);
       right: 0rem;
-      padding: 0.3rem 0.6rem;
-      border-radius: 0.2rem;
+      padding: 0 0.7rem;
+      border-radius: 0.25rem;
 
       transition: opacity 0.2s;
-      
 
       svg{
         font-size: 1.25rem;
@@ -149,10 +153,10 @@
           border: 0;
           border-radius: 0.2rem;
 
-          width: 2.6rem;
+          width: 3.2rem;
           height: 80%;
           margin-left: 0.3rem;
-          padding: 0.2rem 0.5rem 0.1rem;
+          padding: 0.5rem 0.4rem;
         }
       }
     }

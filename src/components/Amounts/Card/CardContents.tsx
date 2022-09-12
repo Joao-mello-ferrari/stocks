@@ -1,5 +1,5 @@
 import ContentLoader from "react-content-loader";
-import { formatCurrency } from "../../../helpers/numbersFormatters";
+import { formatCurrencyToDisplay } from "../../../helpers/numbersFormatters";
 
 function LoaderSkeleton(){
   return(
@@ -34,5 +34,5 @@ export function getContent(
 ){
   if(loading) return <LoaderSkeleton/>
   if(error) return <Error/>
-  return <strong>{ formatCurrency(String(value)) }</strong>
+  return <strong>{ formatCurrencyToDisplay(String(value)) }</strong>
 }

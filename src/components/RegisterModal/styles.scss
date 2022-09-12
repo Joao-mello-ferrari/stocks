@@ -28,11 +28,12 @@
   display: flex;
   flex-direction: column;
   padding: 1rem 2rem;
-  height: calc(80vh - 2rem);
+  height: 80vh;
 
   h2{
     text-align: center;
     font-size: 2rem;
+    margin-top: 1rem;
   }
 }
 
@@ -45,7 +46,7 @@
   }
 
   .modal-content-container{
-    height: calc(76vh - 7.2rem);
+    height: 76vh;
     padding: 3.6rem 2rem
   }
 }

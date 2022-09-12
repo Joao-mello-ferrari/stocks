@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, MutableRefObject, useRef, useState } from "react";
 
-import { formatCurrency, formatNumber, calculateTotal, getRawCurVal, getRawNumberVal } from '../../../helpers/numbersFormatters'
+import { formatNumber, calculateTotal, getRawCurVal, getRawNumberVal, formatCurrencyInput } from '../../../helpers/numbersFormatters'
 
 import { useMutation, useQueryClient } from "react-query";
 import { useRegisters } from "../../../contexts/registersContext";
@@ -91,7 +91,7 @@ export function Form(){
 
   function handlePriceChange(e: ChangeEvent<HTMLInputElement>){
     const price = e.target.value;
-    const newPrice = formatCurrency(price, false);
+    const newPrice = formatCurrencyInput(price);
     setPriceInput(newPrice);
   }
 
