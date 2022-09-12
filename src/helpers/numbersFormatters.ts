@@ -65,7 +65,8 @@ export function formatCurrencyInput(value: string): string{
   return valueToFormat;
 }
 
-export function formatNumber(amount: string): string{
+export function formatNumber(amount: string | number): string{
+  amount = String(amount);
   amount = amount.replaceAll('.','');
   amount = amount.replaceAll(',','');
   if(!(/^[0-9]+$/.test(amount))) amount = amount.slice(0,amount.length-1);

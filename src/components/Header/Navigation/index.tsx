@@ -25,6 +25,13 @@ export function Navigation(){
         Resumo
       </Link>
 
+      <Link 
+        to="/average-price" 
+        className={`${isActive('average-price') && 'active'}`}
+      >
+        Preço
+      </Link>
+
     </nav>
   )
 }
